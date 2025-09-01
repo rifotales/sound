@@ -1219,66 +1219,69 @@
                     }
                 });
             });
-/* ------------------ Навигация: выделение активного пункта меню при скроллинге ------------------ */
-document.addEventListener('DOMContentLoaded', () => {
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('.section');
+            
+/* Наблюдатель пересечения для активного состояния навигации */
+const navLinks = document.querySelectorAll('.nav-link');
+const sections = document.querySelectorAll('.section');
 
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: [0.3, 0.5, 0.7] // Пороги пересечения для более точного определения активной секции
-    };
+const observerOptions = {
+    root: null,
+    rootMargin: '-20% 0px -20% 0px', // Уменьшаем область наблюдения для точности
+    threshold: [0.3, 0.5, 0.7] // Пороги для определения видимости
+};
 
-    const observer = new IntersectionObserver((entries) => {
-        let mostVisibleSection = null;
-        let maxRatio = 0;
+const observer = new IntersectionObserver((entries) => {
+    let mostVisibleSection = null;
+    let maxRatio = 0;
 
-        // Находим секцию с наибольшим процентом видимости
-        entries.forEach(entry => {
-            if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-                maxRatio = entry.intersectionRatio;
-                mostVisibleSection = entry.target;
-            }
-        });
-
-        // Если есть видимая секция, обновляем активный пункт меню
-        if (mostVisibleSection) {
-            navLinks.forEach(link => link.classList.remove('active'));
-            const activeLink = document.querySelector(`.nav-link[href="#${mostVisibleSection.id}"]`);
-            if (activeLink) {
-                activeLink.classList.add('active');
-            }
+    // Находим секцию с наибольшей видимостью
+    entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+            maxRatio = entry.intersectionRatio;
+            mostVisibleSection = entry.target;
         }
-    }, observerOptions);
-
-    // Наблюдаем за всеми секциями
-    sections.forEach(section => observer.observe(section));
-
-    // Обработка кликов по навигации
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            navLinks.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-            const targetId = link.getAttribute('href').substring(1);
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                targetSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
     });
 
-    /* Плавное взаимодействие: горячие клавиши для навигации */
-    window.addEventListener('keydown', (e) => {
-        if (e.key >= '1' && e.key <= '7') {
-            document.getElementById('stage' + e.key).scrollIntoView({ behavior: 'smooth' });
+    // Обновляем активный пункт меню
+    if (mostVisibleSection) {
+        navLinks.forEach(link => link.classList.remove('active'));
+        const activeLink = document.querySelector(`.nav-link[href="#${mostVisibleSection.id}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+    }
+}, observerOptions);
+
+sections.forEach(section => observer.observe(section));
+
+// Обработка кликов по навигации
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        const targetId = link.getAttribute('href').substring(1);
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth' });
         }
     });
 });
 
+/* Плавное взаимодействие: горячие клавиши для навигации */
+window.addEventListener('keydown', (e) => {
+    if (e.key >= '1' && e.key <= '7') {
+        const targetSection = document.getElementById('stage' + e.key);
+        if (targetSection) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            document.querySelector(`.nav-link[href="#stage${e.key}"]`).classList.add('active');
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+});
     </script>
 
 </body>
 
 </html>
+
