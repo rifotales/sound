@@ -1143,93 +1143,91 @@
                 }
             });
 
-            /* Данные аккордеонов (не изменял основную структуру) */
-            const accordionData = {
-                5: [
-                    { title: "Оборудование для записи", content: "Знакомство с различными видами микрофонов (динамическими, конденсаторными), аудиоинтерфейсами и цифровыми рекордерами. Узнайте, как выбрать подходящее оборудование для ваших задач, от записи вокала до полевых записей." },
-                    { title: "Техники записи", content: "От основ акустики до тонкостей размещения микрофонов. Изучите методы, такие как запись M/S (Mid-Side), X/Y и Decca Tree, чтобы достичь желаемого стереоэффекта и пространственной глубины." },
-                    { title: "Цифровая обработка звука (DSP)", content: "Освойте основы работы с DAW (Digital Audio Workstation), включая редактирование, эквализацию (EQ) для коррекции тембра, компрессию для управления динамическим диапазоном и реверберацию для создания ощущения пространства." },
-                    { title: "Синтез звука", content: "Погрузитесь в мир создания звуков с нуля. Изучите методы, такие как субтрактивный, FM и гранулярный синтез, чтобы создавать уникальные звуковые текстуры и эффекты для вашего проекта." },
-                    { title: "Микрофонные технологии", content: "Углубитесь в современные виды микрофонов. Узнайте, как различать их по направленности (кардиоидные, всенаправленные, двунаправленные) и как их характеристики влияют на конечный результат записи." }
-                ],
-                6: [
-                    { title: "Звук в кино", content: "Поймите, как звукорежиссёры создают иммерсивные миры для фильмов. Изучите роль диалогов, звуковых эффектов (SFX), фонового шума (ambient) и музыки в построении атмосферы и эмоционального воздействия на зрителя." },
-                    { title: "Звук в играх", content: "Разберитесь в принципах интерактивного аудио. Узнайте, как звуковые элементы, такие как звуки шагов, выстрелов и музыки, динамично изменяются в зависимости от действий игрока, создавая уникальный игровой опыт." },
-                    { title: "Звук в VR/AR", content: "Исследуйте особенности создания звука для виртуальной и дополненной реальности. Погрузитесь в концепцию пространственного аудио, где звук движется вместе с виртуальным объектом, создавая полный эффект присутствия." },
-                    { title: "Бинауральный звук", content: "Изучение методов записи и воспроизведения бинаурального звука для создания эффекта присутствия. Узнайте, как использовать HRTF (Head-Related Transfer Function) для симуляции, как звук достигает ушей слушателя." },
-                    { title: "Технологии пространственного звука", content: "Разработка и использование технологий для создания трехмерного звука в играх, кино и VR. От Dolby Atmos до Ambisonics — освойте инструменты для построения сложных и реалистичных звуковых ландшафтов." }
-                ],
-                7: [
-                    { title: "Основы сторителлинга", content: "Изучите принципы построения повествования, включая структуру, персонажей и конфликт. Поймите, как звук может служить мощным инструментом для усиления этих элементов." },
-                    { title: "Звук и эмоции", content: "Разберитесь в том, как различные звуковые паттерны, частоты и тембры влияют на эмоциональное восприятие аудитории. Узнайте, как с помощью звука создать напряжение, радость, страх или покой." },
-                    { title: "Звуковая драматургия", content: "Разработка звуковых решений, которые поддерживают сюжет и атмосферу. Узнайте, как использовать звук, чтобы предвещать события, создавать саспенс или раскрывать характер персонажей." },
-                    { title: "Интерактивный сторителлинг", content: "Создание интерактивных аудиоисторий с использованием современных технологий. Поймите, как сделать так, чтобы действия пользователя влияли на звуковое окружение и развитие сюжета." },
-                    { title: "Потенциал ИИ", content: "Исследуйте применение искусственного интеллекта в создании интерактивных звуковых решений. Узнайте, как ИИ может генерировать уникальные звуковые ландшафты, адаптирующиеся к повествованию в реальном времени." }
-                ]
-            };
+/* Данные аккордеонов */
+const accordionData = {
+    5: [
+        { title: "Оборудование для записи", content: "Знакомство с различными видами микрофонов (динамическими, конденсаторными), аудиоинтерфейсами и цифровыми рекордерами. Узнайте, как выбрать подходящее оборудование для ваших задач, от записи вокала до полевых записей." },
+        { title: "Техники записи", content: "От основ акустики до тонкостей размещения микрофонов. Изучите методы, такие как запись M/S (Mid-Side), X/Y и Decca Tree, чтобы достичь желаемого стереоэффекта и пространственной глубины." },
+        { title: "Цифровая обработка звука (DSP)", content: "Освойте основы работы с DAW (Digital Audio Workstation), включая редактирование, эквализацию (EQ) для коррекции тембра, компрессию для управления динамическим диапазоном и реверберацию для создания ощущения пространства." },
+        { title: "Синтез звука", content: "Погрузитесь в мир создания звуков с нуля. Изучите методы, такие как субтрактивный, FM и гранулярный синтез, чтобы создавать уникальные звуковые текстуры и эффекты для вашего проекта." },
+        { title: "Микрофонные технологии", content: "Углубитесь в современные виды микрофонов. Узнайте, как различать их по направленности (кардиоидные, всенаправленные, двунаправленные) и как их характеристики влияют на конечный результат записи." }
+    ],
+    6: [
+        { title: "Звук в кино", content: "Поймите, как звукорежиссёры создают иммерсивные миры для фильмов. Изучите роль диалогов, звуковых эффектов (SFX), фонового шума (ambient) и музыки в построении атмосферы и эмоционального воздействия на зрителя." },
+        { title: "Звук в играх", content: "Разберитесь в принципах интерактивного аудио. Узнайте, как звуковые элементы, такие как звуки шагов, выстрелов и музыки, динамично изменяются в зависимости от действий игрока, создавая уникальный игровой опыт." },
+        { title: "Звук в VR/AR", content: "Исследуйте особенности создания звука для виртуальной и дополненной реальности. Погрузитесь в концепцию пространственного аудио, где звук движется вместе с виртуальным объектом, создавая полный эффект присутствия." },
+        { title: "Бинауральный звук", content: "Изучение методов записи и воспроизведения бинаурального звука для создания эффекта присутствия. Узнайте, как использовать HRTF (Head-Related Transfer Function) для симуляции, как звук достигает ушей слушателя." },
+        { title: "Технологии пространственного звука", content: "Разработка и использование технологий для создания трехмерного звука в играх, кино и VR. От Dolby Atmos до Ambisonics — освойте инструменты для построения сложных и реалистичных звуковых ландшафтов." }
+    ],
+    7: [
+        { title: "Основы сторителлинга", content: "Изучите принципы построения повествования, включая структуру, персонажей и конфликт. Поймите, как звук может служить мощным инструментом для усиления этих элементов." },
+        { title: "Звук и эмоции", content: "Разберитесь в том, как различные звуковые паттерны, частоты и тембры влияют на эмоциональное восприятие аудитории. Узнайте, как с помощью звука создать напряжение, радость, страх или покой." },
+        { title: "Звуковая драматургия", content: "Разработка звуковых решений, которые поддерживают сюжет и атмосферу. Узнайте, как использовать звук, чтобы предвещать события, создавать саспенс или раскрывать характер персонажей." },
+        { title: "Интерактивный сторителлинг", content: "Создание интерактивных аудиоисторий с использованием современных технологий. Поймите, как сделать так, чтобы действия пользователя влияли на звуковое окружение и развитие сюжета." },
+        { title: "Потенциал ИИ", content: "Исследуйте применение искусственного интеллекта в создании интерактивных звуковых решений. Узнайте, как ИИ может генерировать уникальные звуковые ландшафты, адаптирующиеся к повествованию в реальном времени." }
+    ]
+};
 
-            function createAccordion(containerId, data) {
-                const container = document.getElementById(containerId);
-                if (!container) return;
-                data.forEach((item) => {
-                    const div = document.createElement('div');
-                    div.className = 'glass-card overflow-hidden';
-                    div.innerHTML = `
-                        <button class="accordion-button p-4">
-                            <h3 class="text-xl font-bold neon-text-light">${item.title}</h3>
-                            <span class="text-2xl transition-transform duration-300 neon-text-light">+</span>
-                        </button>
-                        <div class="accordion-content p-4">
-                            <p class="neon-text-light">${item.content}</p>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                });
-            }
+function createAccordion(containerId, data) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    data.forEach((item) => {
+        const div = document.createElement('div');
+        div.className = 'glass-card overflow-hidden';
+        div.innerHTML = `
+            <button class="accordion-button p-4">
+                <h3 class="text-xl font-bold neon-text-light">${item.title}</h3>
+                <span class="text-2xl transition-transform duration-300 neon-text-light">+</span>
+            </button>
+            <div class="accordion-content p-4">
+                <p class="neon-text-light">${item.content}</p>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
 
-            createAccordion('accordion-container-5', accordionData[5]);
-            createAccordion('accordion-container-6', accordionData[6]);
-            createAccordion('accordion-container-7', accordionData[7]);
+createAccordion('accordion-container-5', accordionData[5]);
+createAccordion('accordion-container-6', accordionData[6]);
+createAccordion('accordion-container-7', accordionData[7]);
 
-            document.querySelectorAll('[id^="accordion-container-"]').forEach(container => {
-                container.addEventListener('click', (e) => {
-                    const button = e.target.closest('.accordion-button');
-                    if (button) {
-                        const content = button.nextElementSibling;
-                        const icon = button.querySelector('span');
-                        const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+document.querySelectorAll('[id^="accordion-container-"]').forEach(container => {
+    container.addEventListener('click', (e) => {
+        const button = e.target.closest('.accordion-button');
+        if (button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('span');
+            const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
 
-                        button.parentElement.parentElement.querySelectorAll('.accordion-content').forEach(el => {
-                            if (el !== content) {
-                                el.style.maxHeight = null;
-                                el.previousElementSibling.querySelector('span').style.transform = 'rotate(0deg)';
-                                el.previousElementSibling.querySelector('span').textContent = '+';
-                            }
-                        });
-                        
-                        if (isOpen){
-                            content.style.maxHeight = null;
-                            icon.style.transform = 'rotate(0deg)';
-                            icon.textContent = '+';
-                        } else {
-                            content.style.maxHeight = content.scrollHeight + "px";
-                            icon.style.transform = 'rotate(45deg)';
-                            icon.textContent = '–';
-                        }
-                    }
-                });
+            container.querySelectorAll('.accordion-content').forEach(el => {
+                if (el !== content) {
+                    el.style.maxHeight = null;
+                    el.previousElementSibling.querySelector('span').style.transform = 'rotate(0deg)';
+                    el.previousElementSibling.querySelector('span').textContent = '+';
+                }
             });
-            
+
+            if (isOpen) {
+                content.style.maxHeight = null;
+                icon.style.transform = 'rotate(0deg)';
+                icon.textContent = '+';
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.style.transform = 'rotate(45deg)';
+                icon.textContent = '–';
+            }
+        }
+    });
+});
+
 /* Навигация: подсветка активного пункта с плавной анимацией и плавный скролл */
 const navLinks = document.querySelectorAll('.nav-link');
 const sections = document.querySelectorAll('.section');
 
-// Убираем активный класс у всех ссылок
 function clearActiveLinks() {
     navLinks.forEach(link => link.classList.remove('active'));
 }
 
-// Обсервер для скролла
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1242,7 +1240,6 @@ const observer = new IntersectionObserver((entries) => {
 
 sections.forEach(section => observer.observe(section));
 
-// Плавный скролл при клике на пункт меню
 navLinks.forEach(link => {
     link.addEventListener('click', e => {
         e.preventDefault();
@@ -1250,36 +1247,18 @@ navLinks.forEach(link => {
         const targetSection = document.getElementById(targetId);
         targetSection.scrollIntoView({ behavior: 'smooth' });
         clearActiveLinks();
-        link.classList.add('active'); // подсветка при клике
+        link.classList.add('active');
     });
 });
 
-// Горячие клавиши для навигации
-window.addEventListener('keydown', (e) => {
-    if (e.key >= '1' && e.key <= '7') {
-        const targetSection = document.getElementById('stage' + e.key);
-        targetSection.scrollIntoView({ behavior: 'smooth' });
-        clearActiveLinks();
-        const activeLink = document.querySelector(`.nav-link[href="#stage${e.key}"]`);
-        if (activeLink) activeLink.classList.add('active');
-    }
-});
-
-
-/* Плавное взаимодействие: горячие клавиши для навигации */
 window.addEventListener('keydown', (e) => {
     if (e.key >= '1' && e.key <= '7') {
         const targetSection = document.getElementById('stage' + e.key);
         if (targetSection) {
-            navLinks.forEach(l => l.classList.remove('active'));
-            document.querySelector(`.nav-link[href="#stage${e.key}"]`).classList.add('active');
             targetSection.scrollIntoView({ behavior: 'smooth' });
+            clearActiveLinks();
+            const activeLink = document.querySelector(`.nav-link[href="#stage${e.key}"]`);
+            if (activeLink) activeLink.classList.add('active');
         }
     }
 });
-    </script>
-
-</body>
-
-</html>
-
