@@ -138,6 +138,28 @@
         /* Улучшение контраста для легкой читаемости */
         .neon-text-light{ color:#d8f5ff; text-shadow:0 0 4px rgba(125,211,252,0.06);}        
 
+        /* Стили для интегрированного текста — аккуратно и читаемо */
+        .integrated-text{white-space:normal; color:var(--neon);}
+        .integrated-text ul{list-style:disc; margin-left:1rem; color:#d8f5ff}
+        .integrated-text li{margin-bottom:.5rem}
+
+        /* Улучшения дизайна: больше блоков по шагам, ветки с блоками, этапность */
+        .step-block { margin-bottom: 2rem; border-left: 4px solid var(--accent-2); padding-left: 1rem; }
+        .step-block h5 { font-family: 'Orbitron', sans-serif; font-size: 1.25rem; color: var(--accent-2); margin-bottom: 0.5rem; }
+        .branch-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+        .branch-card { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid rgba(52,211,153,0.15); border-radius: 0.75rem; padding: 1rem; transition: all 0.3s ease; }
+        .branch-card:hover { box-shadow: 0 0 20px rgba(52,211,153,0.2); transform: translateY(-5px); }
+        .branch-card h6 { font-size: 1rem; color: var(--neon); margin-bottom: 0.5rem; }
+        .stage-progress { display: flex; align-items: center; margin-bottom: 1rem; }
+        .stage-progress .step-number { background: var(--accent-2); color: var(--bg-1); font-weight: bold; border-radius: 50%; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; margin-right: 1rem; }
+        .substep-list { list-style-type: none; padding-left: 0; }
+        .substep-list li { margin-bottom: 1rem; padding: 0.75rem; background: rgba(18,24,44,0.35); border-radius: 0.5rem; position: relative; }
+        .substep-list li::before { content: ''; position: absolute; left: -1rem; top: 50%; width: 0.5rem; height: 0.5rem; background: var(--accent); border-radius: 50%; transform: translateY(-50%); }
+        .branch-tree { position: relative; padding-left: 2rem; }
+        .branch-tree::before { content: ''; position: absolute; left: 1rem; top: 0; bottom: 0; width: 2px; background: var(--muted); opacity: 0.3; }
+        .branch-tree .branch-card { margin-left: 1rem; position: relative; }
+        .branch-tree .branch-card::before { content: ''; position: absolute; left: -2rem; top: 50%; width: 2rem; height: 2px; background: var(--muted); opacity: 0.3; }
+
     </style>
 
 </head>
@@ -200,10 +222,79 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Улучшенная структура: Разбито на шаги с ветками -->
+            <div class="section-content w-full max-w-5xl mt-6">
+                <div class="glass-card integrated-text">
+                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Природа звука и его характеристики</h4>
+                    <div class="branch-tree">
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Звук и его возникновение</h5></div>
+                            <p>Механизм образования звуковых волн, их распространение в газах, жидкостях и твердых телах.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 1.1: Образование волн</h6>
+                                    <p>Описание процесса вибрации и создания давления.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 1.2: Среды распространения</h6>
+                                    <p>Сравнение газов, жидкостей и твердых тел.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">2</span><h5>Шаг 2: Линейные характеристики</h5></div>
+                            <p>Амплитуда, частота, фаза и их роль в восприятии звука.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 2.1: Амплитуда</h6>
+                                    <p>Влияние на громкость.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 2.2: Частота</h6>
+                                    <p>Определение тона.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 2.3: Фаза</h6>
+                                    <p>Синхронизация волн.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">3</span><h5>Шаг 3: Скорость звука</h5></div>
+                            <p>Влияние среды, температуры и давления на скорость распространения.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 3.1: Факторы среды</h6>
+                                    <p>Влияние плотности.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 3.2: Температура и давление</h6>
+                                    <p>Математические зависимости.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">4</span><h5>Шаг 4: Звуковые волны</h5></div>
+                            <p>Типы волн (продольные, поперечные), их свойства, взаимодействие с объектами.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 4.1: Типы волн</h6>
+                                    <p>Продольные vs. поперечные.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 4.2: Свойства и взаимодействие</h6>
+                                    <p>Отражение, преломление и т.д.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <svg class="wave-visual" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path fill="url(#g1)" d="M0,64L48,90.7C96,117,192,171,288,197.3C384,224,480,224,576,197.3C672,171,768,117,864,85.3C960,53,1056,43,1152,48C1248,53,1344,75,1392,85.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" opacity="0.18"></path><defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#0ea5e9" stop-opacity="0.18"></stop><stop offset="1" stop-color="#7dd3fc" stop-opacity="0.08"></stop></linearGradient></defs></svg>
         </section>
 
-        <!-- Остальные секции оставлены без больших изменений — только заголовки получили stage-title класс -->
         <section id="stage2" class="section">
             <div class="section-content text-center mb-12">
                 <h2 class="text-4xl md:text-6xl font-bold mb-4" style="color:var(--accent-2)">
@@ -211,8 +302,95 @@
                 </h2>
                 <p class="max-w-3xl mx-auto text-lg neon-text-light">Звук в пространстве подчиняется сложным законам. Изучите ключевые явления, которые определяют, как мы слышим звук в реальном мире.</p>
             </div>
+
+            <!-- Улучшенная структура: Разбито на шаги с ветками -->
+            <div class="section-content w-full max-w-6xl mb-6">
+                <div class="glass-card integrated-text">
+                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Распространение звука в пространстве</h4>
+                    <div class="branch-tree">
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Законы распространения</h5></div>
+                            <p>Прямолинейное движение, рефракция, дифракция, интерференция, отражение, рассеивание, поглощение, закон обратных квадратов, дисперсия.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 1.1: Прямолинейное движение</h6>
+                                    <p>Основной путь звука.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 1.2: Рефракция и дифракция</h6>
+                                    <p>Изменение направления.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 1.3: Интерференция и отражение</h6>
+                                    <p>Взаимодействие волн.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 1.4: Рассеивание и поглощение</h6>
+                                    <p>Потеря энергии.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 1.5: Закон обратных квадратов и дисперсия</h6>
+                                    <p>Расстояние и частота.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">2</span><h5>Шаг 2: Энергетические характеристики</h5></div>
+                            <p>Интенсивность, мощность, звуковое давление и их измерение.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 2.1: Интенсивность и мощность</h6>
+                                    <p>Энергетические метрики.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 2.2: Звуковое давление</h6>
+                                    <p>Измерение в децибелах.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">3</span><h5>Шаг 3: Акустический резонанс</h5></div>
+                            <p>Усиление звука при совпадении частот источника и системы.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 3.1: Условия резонанса</h6>
+                                    <p>Совпадение частот.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">4</span><h5>Шаг 4: Сверхзвуковые эффекты</h5></div>
+                            <p>Ударные волны и их особенности.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 4.1: Ударные волны</h6>
+                                    <p>При сверхзвуковых скоростях.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">5</span><h5>Шаг 5: Физические законы</h5></div>
+                            <p>Законы Гука, Ньютона-Лапласа, эффект Доплера.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 5.1: Закон Гука</h6>
+                                    <p>Упругость.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 5.2: Ньютон-Лаплас</h6>
+                                    <p>Скорость звука.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 5.3: Эффект Доплера</h6>
+                                    <p>Изменение частоты.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="section-content w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- контент без изменений -->
                 <div class="glass-card flex flex-col items-center justify-center p-8 relative overflow-hidden">
                     <h3 class="text-2xl font-bold mb-4 neon-text-light">Отражение (Рефлексия)</h3>
                     <p class="text-center neon-text-light">Звуковая волна отскакивает от поверхности, подобно свету от зеркала. Угол падения равен углу отражения. Это явление создает эхо и реверберацию.</p>
@@ -269,6 +447,62 @@
                     <h3 class="text-2xl font-bold mb-2 neon-text-light">Цифровое Моделирование</h3>
                     <p class="neon-text-light">Современное программное обеспечение позволяет создавать точные 3D-модели помещений и симулировать распространение звука в них, предсказывая акустические параметры еще на этапе проектирования.</p>
                 </div>
+
+                <!-- Улучшенная структура: Разбито на шаги с ветками -->
+                <div class="glass-card integrated-text">
+                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Акустика помещений</h4>
+                    <div class="branch-tree">
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Влияние материалов и геометрии</h5></div>
+                            <p>Как материалы и форма помещений влияют на акустику.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 1.1: Материалы</h6>
+                                    <p>Поглощение и отражение.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 1.2: Геометрия</h6>
+                                    <p>Форма и размеры.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">2</span><h5>Шаг 2: Реверберация</h5></div>
+                            <p>Многократные отражения звука, их измерение и воздействие на восприятие.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 2.1: Отражения</h6>
+                                    <p>Множественные эхо.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 2.2: Измерение</h6>
+                                    <p>RT60.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">3</span><h5>Шаг 3: Акустическая изоляция</h5></div>
+                            <p>Методы снижения внешних шумов.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 3.1: Материалы</h6>
+                                    <p>Массивные конструкции.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">4</span><h5>Шаг 4: Цифровое моделирование</h5></div>
+                            <p>Использование ПО для симуляции акустики помещений.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 4.1: 3D-модели</h6>
+                                    <p>Симуляция распространения.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
         
@@ -284,6 +518,82 @@
                     <canvas id="psychoacousticsChart"></canvas>
                 </div>
             </div>
+
+            <!-- Улучшенная структура: Разбито на шаги с ветками -->
+            <div class="section-content w-full max-w-5xl mt-6">
+                <div class="glass-card integrated-text">
+                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Психоакустика</h4>
+                    <div class="branch-tree">
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Физиология слуха</h5></div>
+                            <p>Строение слухового аппарата, процесс восприятия звуков.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 1.1: Строение уха</h6>
+                                    <p>Внешнее, среднее, внутреннее.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 1.2: Процесс восприятия</h6>
+                                    <p>От волны к сигналу мозга.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">2</span><h5>Шаг 2: Восприятие частоты и амплитуды</h5></div>
+                            <p>Чувствительность слуха к разным частотам и громкости.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 2.1: Частота</h6>
+                                    <p>Диапазон слуха.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 2.2: Амплитуда</h6>
+                                    <p>Громкость.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">3</span><h5>Шаг 3: Кривые равной громкости</h5></div>
+                            <p>Графики восприятия громкости на разных частотах.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 3.1: ISO 226</h6>
+                                    <p>Стандартные кривые.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">4</span><h5>Шаг 4: Маскировка звуков</h5></div>
+                            <p>Подавление одного звука другим (громким или близким по частоте).</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 4.1: Частотная маскировка</h6>
+                                    <p>Близкие частоты.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 4.2: Временная маскировка</h6>
+                                    <p>Последовательные звуки.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">5</span><h5>Шаг 5: Пространственный звук</h5></div>
+                            <p>Как человек воспринимает направление и расстояние звука.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 5.1: Направление</h6>
+                                    <p>Бинауральные подсказки.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 5.2: Расстояние</h6>
+                                    <p>Аттенуация и реверб.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
         <section id="stage5" class="section">
@@ -293,6 +603,106 @@
                 </h2>
                 <p class="max-w-3xl mx-auto text-lg neon-text-light">От микрофона до цифровой станции — освойте инструменты и техники, которые лежат в основе создания любого современного аудиоконтента.</p>
             </div>
+
+            <!-- Улучшенная структура: Разбито на шаги с ветками -->
+            <div class="section-content w-full max-w-5xl mb-6">
+                <div class="glass-card integrated-text">
+                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Звукозапись и обработка</h4>
+                    <div class="branch-tree">
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Оборудование</h5></div>
+                            <p>Микрофоны, аудиоинтерфейсы, рекордеры.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 1.1: Микрофоны</h6>
+                                    <p>Типы и выбор.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 1.2: Аудиоинтерфейсы</h6>
+                                    <p>Подключение.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 1.3: Рекордеры</h6>
+                                    <p>Портативные устройства.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">2</span><h5>Шаг 2: Техники записи</h5></div>
+                            <p>Запись вокала, инструментов, амбиентных звуков.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 2.1: Вокал</h6>
+                                    <p>Техники захвата.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 2.2: Инструменты</h6>
+                                    <p>Микширование.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 2.3: Амбиент</h6>
+                                    <p>Полевая запись.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">3</span><h5>Шаг 3: Цифровая обработка</h5></div>
+                            <p>Работа в DAW, редактирование, эквализация, компрессия.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 3.1: DAW</h6>
+                                    <p>Интерфейс и функции.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 3.2: Редактирование</h6>
+                                    <p>Обрезка и монтаж.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 3.3: EQ и компрессия</h6>
+                                    <p>Коррекция.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">4</span><h5>Шаг 4: Синтез звука</h5></div>
+                            <p>Субтрактивный, FM, гранулярный синтез.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 4.1: Субтрактивный</h6>
+                                    <p>Фильтры.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 4.2: FM</h6>
+                                    <p>Модуляция.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 4.3: Гранулярный</h6>
+                                    <p>Гранулы.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">5</span><h5>Шаг 5: Микрофонные технологии</h5></div>
+                            <p>Особенности микрофонов для студий, подкастов, игр.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 5.1: Студийные</h6>
+                                    <p>Конденсаторные.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 5.2: Подкасты</h6>
+                                    <p>Динамические.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 5.3: Игры</h6>
+                                    <p>Направленные.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="accordion-container-5" class="section-content w-full max-w-5xl space-y-4">
             </div>
         </section>
@@ -304,6 +714,78 @@
                 </h2>
                 <p class="max-w-3xl mx-auto text-lg neon-text-light">Звук играет ключевую роль в кино, играх и VR. Изучите специфику создания звуковых миров для разных платформ.</p>
             </div>
+
+            <!-- Улучшенная структура: Разбито на шаги с ветками -->
+            <div class="section-content w-full max-w-5xl mb-6">
+                <div class="glass-card integrated-text">
+                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Звукорежиссура в медиа</h4>
+                    <div class="branch-tree">
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Звук в кино</h5></div>
+                            <p>Создание диалогов, эффектов, музыки для фильмов.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 1.1: Диалоги</h6>
+                                    <p>Чистота и синхронизация.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 1.2: Эффекты</h6>
+                                    <p>SFX.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 1.3: Музыка</h6>
+                                    <p>Саундтрек.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">2</span><h5>Шаг 2: Звук в играх</h5></div>
+                            <p>Динамическое аудио и интерактивные элементы звукового дизайна.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 2.1: Динамическое аудио</h6>
+                                    <p>Адаптация к действиям.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 2.2: Интерактивные элементы</h6>
+                                    <p>Звуковой дизайн.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">3</span><h5>Шаг 3: Звук в VR/AR</h5></div>
+                            <p>Пространственное аудио для виртуальной и дополненной реальности.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 3.1: Пространственное аудио</h6>
+                                    <p>3D-звук.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">4</span><h5>Шаг 4: Бинауральный звук</h5></div>
+                            <p>Техники записи и воспроизведения для эффекта присутствия.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 4.1: Запись</h6>
+                                    <p>HRTF.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">5</span><h5>Шаг 5: Пространственный звук</h5></div>
+                            <p>Технологии 3D-аудио для игр, кино и VR.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 5.1: Технологии</h6>
+                                    <p>Dolby Atmos, Ambisonics.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="accordion-container-6" class="section-content w-full max-w-5xl space-y-4">
             </div>
         </section>
@@ -315,6 +797,70 @@
                 </h2>
                 <p class="max-w-3xl mx-auto text-lg neon-text-light">Звук — это мощный инструмент повествования. Научитесь использовать его для вызова эмоций, создания атмосферы и ведения сюжета.</p>
             </div>
+
+            <!-- Улучшенная структура: Разбито на шаги с ветками -->
+            <div class="section-content w-full max-w-5xl mb-6">
+                <div class="glass-card integrated-text">
+                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Сторителлинг через звук</h4>
+                    <div class="branch-tree">
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Основы сторителлинга</h5></div>
+                            <p>Принципы создания повествования.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 1.1: Структура</h6>
+                                    <p>Завязка, кульминация, развязка.</p>
+                                </div>
+                                <div class="branch-card">
+                                    <h6>Ветка 1.2: Персонажи и конфликт</h6>
+                                    <p>Развитие сюжета.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">2</span><h5>Шаг 2: Звук и эмоции</h5></div>
+                            <p>Влияние звука на эмоциональное восприятие.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 2.1: Паттерны и частоты</h6>
+                                    <p>Эмоциональное воздействие.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">3</span><h5>Шаг 3: Звуковая драматургия</h5></div>
+                            <p>Звуковые решения для усиления сюжета и атмосферы.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 3.1: Саспенс</h6>
+                                    <p>Предвещание событий.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">4</span><h5>Шаг 4: Интерактивный сторителлинг</h5></div>
+                            <p>Аудиоистории с использованием современных технологий.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 4.1: Влияние пользователя</h6>
+                                    <p>Адаптация сюжета.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-block">
+                            <div class="stage-progress"><span class="step-number">5</span><h5>Шаг 5: ИИ в сторителлинге</h5></div>
+                            <p>Применение искусственного интеллекта для интерактивных аудиорешений.</p>
+                            <div class="branch-container">
+                                <div class="branch-card">
+                                    <h6>Ветка 5.1: Генерация</h6>
+                                    <p>Адаптивные ландшафты.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="accordion-container-7" class="section-content w-full max-w-5xl space-y-4">
             </div>
         </section>
@@ -608,7 +1154,7 @@
                 ],
                 6: [
                     { title: "Звук в кино", content: "Поймите, как звукорежиссёры создают иммерсивные миры для фильмов. Изучите роль диалогов, звуковых эффектов (SFX), фонового шума (ambient) и музыки в построении атмосферы и эмоционального воздействия на зрителя." },
-                    { title: "Звук в играх", content: "Разберитесь в принципах интерактивного аудио. Узнайте, как звуковые элементы, такие как звуки шагов, выстрелов и музыки, динамически изменяются в зависимости от действий игрока, создавая уникальный игровой опыт." },
+                    { title: "Звук в играх", content: "Разберитесь в принципах интерактивного аудио. Узнайте, как звуковые элементы, такие как звуки шагов, выстрелов и музыки, динамично изменяются в зависимости от действий игрока, создавая уникальный игровой опыт." },
                     { title: "Звук в VR/AR", content: "Исследуйте особенности создания звука для виртуальной и дополненной реальности. Погрузитесь в концепцию пространственного аудио, где звук движется вместе с виртуальным объектом, создавая полный эффект присутствия." },
                     { title: "Бинауральный звук", content: "Изучение методов записи и воспроизведения бинаурального звука для создания эффекта присутствия. Узнайте, как использовать HRTF (Head-Related Transfer Function) для симуляции, как звук достигает ушей слушателя." },
                     { title: "Технологии пространственного звука", content: "Разработка и использование технологий для создания трехмерного звука в играх, кино и VR. От Dolby Atmos до Ambisonics — освойте инструменты для построения сложных и реалистичных звуковых ландшафтов." }
@@ -618,7 +1164,7 @@
                     { title: "Звук и эмоции", content: "Разберитесь в том, как различные звуковые паттерны, частоты и тембры влияют на эмоциональное восприятие аудитории. Узнайте, как с помощью звука создать напряжение, радость, страх или покой." },
                     { title: "Звуковая драматургия", content: "Разработка звуковых решений, которые поддерживают сюжет и атмосферу. Узнайте, как использовать звук, чтобы предвещать события, создавать саспенс или раскрывать характер персонажей." },
                     { title: "Интерактивный сторителлинг", content: "Создание интерактивных аудиоисторий с использованием современных технологий. Поймите, как сделать так, чтобы действия пользователя влияли на звуковое окружение и развитие сюжета." },
-                    { title: "Потенциал ИИ", content: "Исследуйте применение искусственного интеллекта в создании интерактивных звуковых решений. Узнайте, как ИИ может генерировать уникальные звуковые ландшафтов, адаптирующиеся к повествованию в реальном времени." }
+                    { title: "Потенциал ИИ", content: "Исследуйте применение искусственного интеллекта в создании интерактивных звуковых решений. Узнайте, как ИИ может генерировать уникальные звуковые ландшафты, адаптирующиеся к повествованию в реальном времени." }
                 ]
             };
 
