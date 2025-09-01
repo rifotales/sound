@@ -1220,53 +1220,51 @@
                 });
             });
             
-/* Наблюдатель пересечения для активного состояния навигации */
+/* Навигация: подсветка активного пункта с плавной анимацией и плавный скролл */
 const navLinks = document.querySelectorAll('.nav-link');
 const sections = document.querySelectorAll('.section');
 
-const observerOptions = {
-    root: null,
-    rootMargin: '-20% 0px -20% 0px', // Уменьшаем область наблюдения для точности
-    threshold: [0.3, 0.5, 0.7] // Пороги для определения видимости
-};
+// Убираем активный класс у всех ссылок
+function clearActiveLinks() {
+    navLinks.forEach(link => link.classList.remove('active'));
+}
 
+// Обсервер для скролла
 const observer = new IntersectionObserver((entries) => {
-    let mostVisibleSection = null;
-    let maxRatio = 0;
-
-    // Находим секцию с наибольшей видимостью
     entries.forEach(entry => {
-        if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-            maxRatio = entry.intersectionRatio;
-            mostVisibleSection = entry.target;
+        if (entry.isIntersecting) {
+            clearActiveLinks();
+            const activeLink = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+            if (activeLink) activeLink.classList.add('active');
         }
     });
-
-    // Обновляем активный пункт меню
-    if (mostVisibleSection) {
-        navLinks.forEach(link => link.classList.remove('active'));
-        const activeLink = document.querySelector(`.nav-link[href="#${mostVisibleSection.id}"]`);
-        if (activeLink) {
-            activeLink.classList.add('active');
-        }
-    }
-}, observerOptions);
+}, { threshold: 0.3 });
 
 sections.forEach(section => observer.observe(section));
 
-// Обработка кликов по навигации
+// Плавный скролл при клике на пункт меню
 navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
+    link.addEventListener('click', e => {
         e.preventDefault();
-        navLinks.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
         const targetId = link.getAttribute('href').substring(1);
         const targetSection = document.getElementById(targetId);
-        if (targetSection) {
-            targetSection.scrollIntoView({ behavior: 'smooth' });
-        }
+        targetSection.scrollIntoView({ behavior: 'smooth' });
+        clearActiveLinks();
+        link.classList.add('active'); // подсветка при клике
     });
 });
+
+// Горячие клавиши для навигации
+window.addEventListener('keydown', (e) => {
+    if (e.key >= '1' && e.key <= '7') {
+        const targetSection = document.getElementById('stage' + e.key);
+        targetSection.scrollIntoView({ behavior: 'smooth' });
+        clearActiveLinks();
+        const activeLink = document.querySelector(`.nav-link[href="#stage${e.key}"]`);
+        if (activeLink) activeLink.classList.add('active');
+    }
+});
+
 
 /* Плавное взаимодействие: горячие клавиши для навигации */
 window.addEventListener('keydown', (e) => {
