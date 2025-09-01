@@ -1224,10 +1224,12 @@ document.querySelectorAll('[id^="accordion-container-"]').forEach(container => {
 const navLinks = document.querySelectorAll('.nav-link');
 const sections = document.querySelectorAll('.section');
 
+/* Убираем активный класс со всех ссылок */
 function clearActiveLinks() {
     navLinks.forEach(link => link.classList.remove('active'));
 }
 
+/* Наблюдатель пересечения для активного состояния */
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1240,17 +1242,21 @@ const observer = new IntersectionObserver((entries) => {
 
 sections.forEach(section => observer.observe(section));
 
+/* Плавный скролл при клике */
 navLinks.forEach(link => {
     link.addEventListener('click', e => {
         e.preventDefault();
         const targetId = link.getAttribute('href').substring(1);
         const targetSection = document.getElementById(targetId);
-        targetSection.scrollIntoView({ behavior: 'smooth' });
-        clearActiveLinks();
-        link.classList.add('active');
+        if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+            clearActiveLinks();
+            link.classList.add('active');
+        }
     });
 });
 
+/* Горячие клавиши (1–7) */
 window.addEventListener('keydown', (e) => {
     if (e.key >= '1' && e.key <= '7') {
         const targetSection = document.getElementById('stage' + e.key);
@@ -1262,49 +1268,3 @@ window.addEventListener('keydown', (e) => {
         }
     }
 });
-            /* Наблюдатель пересечения для активного состояния навигации */
-
-            const navLinks = document.querySelectorAll('.nav-link');
-
-            const sections = document.querySelectorAll('.section');
-
-
-
-            const observer = new IntersectionObserver((entries) => {
-
-                entries.forEach(entry => {
-
-                    if (entry.isIntersecting) {
-
-                        navLinks.forEach(link => {
-
-                            link.classList.remove('active');
-
-                            if (link.getAttribute('href').substring(1) === entry.target.id) {
-
-                                link.classList.add('active');
-
-                            }
-
-                        });
-
-                    }
-
-                });
-
-            }, { threshold: 0.5 });
-
-
-
-            sections.forEach(section => observer.observe(section));
-
-
-
-            /* Плавное взаимодействие: горячие клавиши для навигации */
-
-            window.addEventListener('keydown', (e)=>{ if(e.key>='1' && e.key<='7'){ document.getElementById('stage'+e.key).scrollIntoView({behavior:'smooth'}); } });
-
-        });
-
-
-
