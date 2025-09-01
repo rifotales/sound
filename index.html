@@ -772,376 +772,404 @@
         </section>
     </main>
     <script>
-        /* Background Animation (Sound Waves and More Particles) */
-        (function(){
-            const c = document.getElementById('bgCanvas');
-            const ctx = c.getContext('2d');
-            let w = 0, h = 0, dpr = window.devicePixelRatio || 1;
-            let particles = [];
-            const PARTICLE_COUNT = 50; // Increased particle count
-            const WAVE_COUNT = 3; // Number of background sound waves
-            let wavePhase = 0;
+       /* Background Animation (Simplified Particles and Waves) */
+(function(){
+    const c = document.getElementById('bgCanvas');
+    const ctx = c.getContext('2d');
+    let w = 0, h = 0, dpr = window.devicePixelRatio || 1;
+    let particles = [];
+    const PARTICLE_COUNT = 20; // Number of particles
+    let waves = [];
 
-            function resize() {
-                try {
-                    dpr = window.devicePixelRatio || 1;
-                    w = window.innerWidth;
-                    h = window.innerHeight;
-                    c.width = w * dpr;
-                    c.height = h * dpr;
-                    c.style.width = w + 'px';
-                    c.style.height = h + 'px';
-                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-                    initParticles();
-                } catch (e) {
-                    console.error('Canvas resize error:', e);
-                }
-            }
+    function resize() {
+        try {
+            dpr = window.devicePixelRatio || 1;
+            w = window.innerWidth;
+            h = window.innerHeight;
+            c.width = w * dpr;
+            c.height = h * dpr;
+            c.style.width = w + 'px';
+            c.style.height = h + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            initParticles();
+            initWaves();
+        } catch (e) {
+            console.error('Canvas resize error:', e);
+        }
+    }
 
-            function rand(min, max) { return Math.random() * (max - min) + min; }
+    function rand(min, max) { return Math.random() * (max - min) + min; }
 
-            function initParticles() {
-                particles = [];
-                for (let i = 0; i < PARTICLE_COUNT; i++) {
-                    particles.push({
-                        x: rand(0, w),
-                        y: rand(0, h),
-                        r: rand(1, 4), // Slightly larger particles
-                        vx: rand(-0.3, 0.3), // Slightly faster movement
-                        vy: rand(-0.3, 0.3),
-                        alpha: rand(0.1, 0.5), // Slightly more visible
-                        phase: rand(0, Math.PI * 2) // Random phase for variation
-                    });
-                }
-            }
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push({
+                x: rand(0, w),
+                y: rand(0, h),
+                r: rand(1, 3),
+                vx: rand(-0.2, 0.2),
+                vy: rand(-0.2, 0.2),
+                alpha: rand(0.1, 0.4)
+            });
+        }
+    }
 
-            function drawBackground() {
-                try {
-                    ctx.clearRect(0, 0, c.width, c.height);
+    function initWaves() {
+        waves = [
+            { amplitude: h / 10, frequency: 0.001, speed: 0.0002, offset: 0, color: 'rgba(125,211,252,0.1)' },
+            { amplitude: h / 15, frequency: 0.0008, speed: 0.00015, offset: h / 3, color: 'rgba(52,211,153,0.08)' },
+            { amplitude: h / 12, frequency: 0.0012, speed: 0.00025, offset: h / 2, color: 'rgba(125,211,252,0.12)' }
+        ];
+    }
 
-                    // Draw sound wave background
-                    for (let i = 0; i < WAVE_COUNT; i++) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(125,211,252,${0.1 + i * 0.05})`;
-                        ctx.lineWidth = 2;
-                        const waveHeight = h * 0.1;
-                        const waveFrequency = 0.002;
-                        const offsetY = h * (0.3 + i * 0.2);
-                        for (let x = 0; x < w; x++) {
-                            const y = offsetY + waveHeight * Math.sin(x * waveFrequency + wavePhase + i * 0.5);
-                            if (x === 0) ctx.moveTo(x, y);
-                            else ctx.lineTo(x, y);
-                        }
-                        ctx.stroke();
-                    }
-                    wavePhase += 0.02; // Animate wave movement
+    function drawParticlesAndWaves() {
+        try {
+            ctx.clearRect(0, 0, c.width, c.height);
 
-                    // Draw particles
-                    particles.forEach(p => {
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        // Bounce particles off canvas edges
-                        if (p.x < -20) p.x = w + 20;
-                        if (p.x > w + 20) p.x = -20;
-                        if (p.y < -20) p.y = h + 20;
-                        if (p.y > h + 20) p.y = -20;
-                        ctx.beginPath();
-                        ctx.fillStyle = `rgba(125,211,252,${p.alpha})`;
-                        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                        ctx.fill();
-                    });
-
-                    requestAnimationFrame(drawBackground);
-                } catch (e) {
-                    console.error('Background animation error:', e);
-                }
-            }
-
-            window.addEventListener('resize', resize);
-            resize();
-            drawBackground();
-        })();
-
-        /* Interactive Audio and Sound Wave Visualization */
-        document.addEventListener('DOMContentLoaded', () => {
-            const canvas = document.getElementById('soundWaveCanvas');
-            const ctx = canvas.getContext('2d');
-            const frequencySlider = document.getElementById('frequency');
-            const amplitudeSlider = document.getElementById('amplitude');
-            const frequencyValue = document.getElementById('frequencyValue');
-            const amplitudeValue = document.getElementById('amplitudeValue');
-            const playBtn = document.getElementById('playBtn');
-            const stopBtn = document.getElementById('stopBtn');
-            let width, height, oscillator;
-
-            function resizeCanvas() {
-                try {
-                    const dpr = window.devicePixelRatio || 1;
-                    const rect = canvas.getBoundingClientRect();
-                    canvas.width = rect.width * dpr;
-                    canvas.height = rect.height * dpr;
-                    canvas.style.width = rect.width + 'px';
-                    canvas.style.height = rect.height + 'px';
-                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-                    width = rect.width;
-                    height = rect.height;
-                } catch (e) {
-                    console.error('Canvas resize error:', e);
-                }
-            }
-
-            function drawWave() {
-                try {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    const frequency = parseFloat(frequencySlider.value);
-                    const amplitude = parseFloat(amplitudeSlider.value);
-                    frequencyValue.textContent = frequency.toFixed(0);
-                    amplitudeValue.textContent = amplitude.toFixed(0);
-
-                    ctx.beginPath();
-                    ctx.strokeStyle = 'rgba(52,211,153,0.9)';
-                    ctx.lineWidth = 2;
-                    for (let x = 0; x < width; x++) {
-                        const y = height / 2 + (amplitude / 100 * 50) * Math.sin(x * (frequency / 1000) * Math.PI + Date.now() / 500);
-                        if (x === 0) ctx.moveTo(x, y);
-                        else ctx.lineTo(x, y);
-                    }
-                    ctx.stroke();
-                    requestAnimationFrame(drawWave);
-                } catch (e) {
-                    console.error('Wave drawing error:', e);
-                }
-            }
-
-            async function startAudio() {
-                try {
-                    if (Tone.context.state !== 'running') {
-                        await Tone.start();
-                    }
-                    if (!oscillator) {
-                        oscillator = new Tone.Oscillator({
-                            frequency: parseFloat(frequencySlider.value),
-                            volume: -20
-                        }).toDestination();
-                        oscillator.start();
-                    }
-                    playBtn.setAttribute('aria-pressed', 'true');
-                    stopBtn.setAttribute('aria-pressed', 'false');
-                } catch (e) {
-                    console.error('Audio start error:', e);
-                }
-            }
-
-            function stopAudio() {
-                try {
-                    if (oscillator) {
-                        oscillator.stop();
-                        oscillator = null;
-                    }
-                    playBtn.setAttribute('aria-pressed', 'false');
-                    stopBtn.setAttribute('aria-pressed', 'true');
-                } catch (e) {
-                    console.error('Audio stop error:', e);
-                }
-            }
-
-            function updateAudioParams() {
-                try {
-                    if (oscillator) {
-                        oscillator.frequency.setValueAtTime(parseFloat(frequencySlider.value), Tone.now());
-                        oscillator.volume.value = -20 + (parseFloat(amplitudeSlider.value) / 100 * 20);
-                    }
-                } catch (e) {
-                    console.error('Audio params update error:', e);
-                }
-            }
-
-            frequencySlider.addEventListener('input', () => { updateAudioParams(); });
-            amplitudeSlider.addEventListener('input', () => { updateAudioParams(); });
-            playBtn.addEventListener('click', startAudio);
-            stopBtn.addEventListener('click', stopAudio);
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-            drawWave();
-
-            /* Psychoacoustics Chart */
-            try {
-                const chartCtx = document.getElementById('psychoacousticsChart').getContext('2d');
-                new Chart(chartCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ['20', '50', '100', '200', '500', '1k', '2k', '4k', '8k', '16k'],
-                        datasets: [
-                            {
-                                label: '40 Фон (тихо)',
-                                data: [90, 62, 49, 38, 32, 40, 35, 22, 30, 50],
-                                borderColor: '#60a5fa',
-                                backgroundColor: '#60a5fa20',
-                                tension: 0.4,
-                                borderWidth: 3
-                            },
-                            {
-                                label: '70 Фон (нормально)',
-                                data: [105, 82, 74, 68, 65, 70, 68, 60, 64, 78],
-                                borderColor: '#a855f7',
-                                backgroundColor: '#a855f720',
-                                tension: 0.4,
-                                borderWidth: 3
-                            },
-                            {
-                                label: '100 Фон (громко)',
-                                data: [120, 108, 103, 100, 98, 100, 100, 95, 100, 105],
-                                borderColor: '#f472b6',
-                                backgroundColor: '#f472b620',
-                                tension: 0.4,
-                                borderWidth: 3
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Кривые равной громкости (ISO 226:2003)',
-                                color: '#e2e8f0',
-                                font: { size: 18, family: 'Orbitron' }
-                            },
-                            legend: { labels: { color: '#e2e8f0', font: { size: 14 } } }
-                        },
-                        scales: {
-                            x: {
-                                title: { display: true, text: 'Частота (Гц)', color: '#e2e8f0', font: { size: 14, family: 'Roboto' } },
-                                ticks: { color: '#e2e8f0' },
-                                grid: { color: 'rgba(125,211,252,0.1)' }
-                            },
-                            y: {
-                                title: { display: true, text: 'Уровень звукового давления (дБ SPL)', color: '#e2e8f0', font: { size: 14, family: 'Roboto' } },
-                                ticks: { color: '#e2e8f0' },
-                                grid: { color: 'rgba(125,211,252,0.1)' }
-                            }
-                        }
-                    }
-                });
-            } catch (e) {
-                console.error('Chart error:', e);
-            }
-
-            /* Navigation Highlighting */
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('.section');
-
-            function updateNavHighlight() {
-                try {
-                    let current = '';
-                    sections.forEach(section => {
-                        const sectionTop = section.offsetTop;
-                        const sectionHeight = section.clientHeight;
-                        if (window.scrollY >= sectionTop - sectionHeight / 3) {
-                            current = section.getAttribute('id');
-                        }
-                    });
-                    navLinks.forEach(link => {
-                        link.classList.remove('active');
-                        if (link.getAttribute('href').substring(1) === current) {
-                            link.classList.add('active');
-                        }
-                    });
-                } catch (e) {
-                    console.error('Nav highlight error:', e);
-                }
-            }
-
-            window.addEventListener('scroll', updateNavHighlight);
-            window.addEventListener('resize', updateNavHighlight);
-            updateNavHighlight();
-
-            /* Smooth Scroll for Navigation */
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = link.getAttribute('href').substring(1);
-                    const targetSection = document.getElementById(targetId);
-                    if (targetSection) {
-                        window.scrollTo({
-                            top: targetSection.offsetTop - 100,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
+            // Draw particles
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < -20) p.x = w + 20;
+                if (p.x > w + 20) p.x = -20;
+                if (p.y < -20) p.y = h + 20;
+                if (p.y > h + 20) p.y = -20;
+                ctx.beginPath();
+                ctx.fillStyle = `rgba(125,211,252,${p.alpha})`;
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fill();
             });
 
-            /* Accordion Functionality */
-            const accordionData = {
-                stage5: [
-                    { title: 'Типы микрофонов', content: 'Конденсаторные микрофоны обеспечивают высокое качество записи, динамические — устойчивость к громким звукам, ленточные — теплый звук.' },
-                    { title: 'Техники записи вокала', content: 'Используйте поп-фильтр, выбирайте правильное расстояние (15-20 см), контролируйте акустику помещения.' },
-                    { title: 'Цифровая обработка', content: 'Эквализация убирает нежелательные частоты, компрессия сглаживает динамику, реверберация добавляет глубину.' }
-                ],
-                stage6: [
-                    { title: 'Звук в кино', content: 'Диалоги записываются с синхронизацией, эффекты создаются в постпродакшене, музыка подчеркивает эмоции.' },
-                    { title: 'Звук в играх', content: 'Динамическое аудио адаптируется к действиям игрока, создавая иммерсивный опыт.' },
-                    { title: 'Пространственный звук', content: 'Технологии Dolby Atmos и Ambisonics обеспечивают 3D-аудио для VR и кино.' }
-                ],
-                stage7: [
-                    { title: 'Эмоции через звук', content: 'Низкие частоты создают напряжение, высокие — легкость, тишина усиливает драматизм.' },
-                    { title: 'Звуковая драматургия', content: 'Звук направляет внимание слушателя, подчеркивая ключевые моменты сюжета.' },
-                    { title: 'ИИ в сторителлинге', content: 'ИИ может генерировать адаптивные саундтреки, реагирующие на действия пользователя.' }
-                ]
-            };
-
-            function createAccordion(containerId, items) {
-                try {
-                    const container = document.getElementById(containerId);
-                    if (!container) return;
-                    items.forEach((item, index) => {
-                        const accordionItem = document.createElement('div');
-                        accordionItem.classList.add('glass-card', 'glow-border');
-                        accordionItem.innerHTML = `
-                            <button class="accordion-button neon-text-light text-left text-lg font-medium py-4 px-6" aria-expanded="false" aria-controls="accordion-content-${containerId}-${index}">
-                                <span>${item.title}</span>
-                                <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </button>
-                            <div id="accordion-content-${containerId}-${index}" class="accordion-content neon-text-light px-6 pb-4 text-base" style="max-height: 0;">
-                                <p>${item.content}</p>
-                            </div>
-                        `;
-                        container.appendChild(accordionItem);
-
-                        const button = accordionItem.querySelector('.accordion-button');
-                        const content = accordionItem.querySelector('.accordion-content');
-                        button.addEventListener('click', () => {
-                            try {
-                                const isOpen = button.getAttribute('aria-expanded') === 'true';
-                                button.setAttribute('aria-expanded', !isOpen);
-                                content.style.maxHeight = isOpen ? '0' : `${content.scrollHeight}px`;
-                                button.querySelector('svg').style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-                            } catch (e) {
-                                console.error('Accordion toggle error:', e);
-                            }
-                        });
-                    });
-                } catch (e) {
-                    console.error('Accordion creation error:', e);
+            // Draw waves
+            const time = Date.now();
+            waves.forEach(wave => {
+                ctx.beginPath();
+                ctx.strokeStyle = wave.color;
+                ctx.lineWidth = 2;
+                for (let x = 0; x < w; x++) {
+                    const y = wave.offset + wave.amplitude * Math.sin(x * wave.frequency + time * wave.speed);
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
                 }
+                ctx.stroke();
+            });
+
+            requestAnimationFrame(drawParticlesAndWaves);
+        } catch (e) {
+            console.error('Particle and wave animation error:', e);
+        }
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    drawParticlesAndWaves();
+})();
+
+/* Interactive Audio and Sound Wave Visualization */
+document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('soundWaveCanvas');
+    const ctx = canvas ? canvas.getContext('2d') : null;
+    const frequencySlider = document.getElementById('frequency');
+    const amplitudeSlider = document.getElementById('amplitude');
+    const frequencyValue = document.getElementById('frequencyValue');
+    const amplitudeValue = document.getElementById('amplitudeValue');
+    const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    let width, height, oscillator;
+
+    if (!canvas || !ctx || !frequencySlider || !amplitudeSlider || !frequencyValue || !amplitudeValue || !playBtn || !stopBtn) {
+        console.error('Required DOM elements are missing for sound wave visualization');
+        return;
+    }
+
+    function resizeCanvas() {
+        try {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            width = rect.width;
+            height = rect.height;
+        } catch (e) {
+            console.error('Canvas resize error:', e);
+        }
+    }
+
+    function drawWave() {
+        try {
+            if (!width || !height) return; // Пропускаем рендеринг, если размеры не установлены
+            ctx.clearRect(0, 0, width, height);
+
+            // Рисуем упрощённую сетку
+            ctx.strokeStyle = 'rgba(125,211,252,0.2)';
+            ctx.lineWidth = 1;
+            // Горизонтальная центральная линия
+            ctx.beginPath();
+            ctx.moveTo(0, height / 2);
+            ctx.lineTo(width, height / 2);
+            ctx.stroke();
+            // Вертикальные линии (время)
+            for (let x = 0; x < width; x += width / 6) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
             }
 
-            createAccordion('accordion-container-5', accordionData.stage5);
-            createAccordion('accordion-container-6', accordionData.stage6);
-            createAccordion('accordion-container-7', accordionData.stage7);
+            // Рисуем звуковую волну
+            const frequency = parseFloat(frequencySlider.value) || 440;
+            const amplitude = parseFloat(amplitudeSlider.value) || 50;
+            frequencyValue.textContent = frequency.toFixed(0);
+            amplitudeValue.textContent = amplitude.toFixed(0);
 
-            /* Cleanup on page unload */
-            window.addEventListener('unload', () => {
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(52,211,153,1)';
+            ctx.lineWidth = 4;
+            for (let x = 0; x < width; x++) {
+                const y = height / 2 + (amplitude / 100 * height / 2.5) * Math.sin(x * (frequency / 10000) * Math.PI * 2 + Date.now() / 1000);
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            requestAnimationFrame(drawWave);
+        } catch (e) {
+            console.error('Wave drawing error:', e);
+        }
+    }
+
+    async function startAudio() {
+        try {
+            if (Tone.context.state !== 'running') {
+                await Tone.start();
+            }
+            if (!oscillator) {
+                oscillator = new Tone.Oscillator({
+                    frequency: parseFloat(frequencySlider.value) || 440,
+                    volume: -20
+                }).toDestination();
+                oscillator.start();
+            }
+            playBtn.setAttribute('aria-pressed', 'true');
+            stopBtn.setAttribute('aria-pressed', 'false');
+        } catch (e) {
+            console.error('Audio start error:', e);
+        }
+    }
+
+    function stopAudio() {
+        try {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator = null;
+            }
+            playBtn.setAttribute('aria-pressed', 'false');
+            stopBtn.setAttribute('aria-pressed', 'true');
+        } catch (e) {
+            console.error('Audio stop error:', e);
+        }
+    }
+
+    function updateAudioParams() {
+        try {
+            if (oscillator) {
+                oscillator.frequency.setValueAtTime(parseFloat(frequencySlider.value) || 440, Tone.now());
+                oscillator.volume.value = -20 + (parseFloat(amplitudeSlider.value) || 50) / 100 * 20;
+            }
+        } catch (e) {
+            console.error('Audio params update error:', e);
+        }
+    }
+
+    frequencySlider.addEventListener('input', () => { updateAudioParams(); });
+    amplitudeSlider.addEventListener('input', () => { updateAudioParams(); });
+    playBtn.addEventListener('click', startAudio);
+    stopBtn.addEventListener('click', stopAudio);
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    drawWave();
+});
+
+/* Psychoacoustics Chart */
+try {
+    const chartCtx = document.getElementById('psychoacousticsChart').getContext('2d');
+    new Chart(chartCtx, {
+        type: 'line',
+        data: {
+            labels: ['20', '50', '100', '200', '500', '1k', '2k', '4k', '8k', '16k'],
+            datasets: [
+                {
+                    label: '40 Фон (тихо)',
+                    data: [90, 62, 49, 38, 32, 40, 35, 22, 30, 50],
+                    borderColor: '#60a5fa',
+                    backgroundColor: '#60a5fa20',
+                    tension: 0.4,
+                    borderWidth: 3
+                },
+                {
+                    label: '70 Фон (нормально)',
+                    data: [105, 82, 74, 68, 65, 70, 68, 60, 64, 78],
+                    borderColor: '#a855f7',
+                    backgroundColor: '#a855f720',
+                    tension: 0.4,
+                    borderWidth: 3
+                },
+                {
+                    label: '100 Фон (громко)',
+                    data: [120, 108, 103, 100, 98, 100, 100, 95, 100, 105],
+                    borderColor: '#f472b6',
+                    backgroundColor: '#f472b620',
+                    tension: 0.4,
+                    borderWidth: 3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Кривые равной громкости (ISO 226:2003)',
+                    color: '#e2e8f0',
+                    font: { size: 18, family: 'Orbitron' }
+                },
+                legend: { labels: { color: '#e2e8f0', font: { size: 14 } } }
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: 'Частота (Гц)', color: '#e2e8f0', font: { size: 14, family: 'Roboto' } },
+                    ticks: { color: '#e2e8f0' },
+                    grid: { color: 'rgba(125,211,252,0.1)' }
+                },
+                y: {
+                    title: { display: true, text: 'Уровень звукового давления (дБ SPL)', color: '#e2e8f0', font: { size: 14, family: 'Roboto' } },
+                    ticks: { color: '#e2e8f0' },
+                    grid: { color: 'rgba(125,211,252,0.1)' }
+                }
+            }
+        }
+    });
+} catch (e) {
+    console.error('Chart error:', e);
+}
+
+/* Navigation Highlighting */
+const navLinks = document.querySelectorAll('.nav-link');
+const sections = document.querySelectorAll('.section');
+
+function updateNavHighlight() {
+    try {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (window.scrollY >= sectionTop - sectionHeight / 3) {
+                current = section.getAttribute('id');
+            }
+        });
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').substring(1) === current) {
+                link.classList.add('active');
+            }
+        });
+    } catch (e) {
+        console.error('Nav highlight error:', e);
+    }
+}
+
+window.addEventListener('scroll', updateNavHighlight);
+window.addEventListener('resize', updateNavHighlight);
+updateNavHighlight();
+
+/* Smooth Scroll for Navigation */
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').substring(1);
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+            window.scrollTo({
+                top: targetSection.offsetTop - 100,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+/* Accordion Functionality */
+const accordionData = {
+    stage5: [
+        { title: 'Типы микрофонов', content: 'Конденсаторные микрофоны обеспечивают высокое качество записи, динамические — устойчивость к громким звукам, ленточные — теплый звук.' },
+        { title: 'Техники записи вокала', content: 'Используйте поп-фильтр, выбирайте правильное расстояние (15-20 см), контролируйте акустику помещения.' },
+        { title: 'Цифровая обработка', content: 'Эквализация убирает нежелательные частоты, компрессия сглаживает динамику, реверберация добавляет глубину.' }
+    ],
+    stage6: [
+        { title: 'Звук в кино', content: 'Диалоги записываются с синхронизацией, эффекты создаются в постпродакшене, музыка подчеркивает эмоции.' },
+        { title: 'Звук в играх', content: 'Динамическое аудио адаптируется к действиям игрока, создавая иммерсивный опыт.' },
+        { title: 'Пространственный звук', content: 'Технологии Dolby Atmos и Ambisonics обеспечивают 3D-аудио для VR и кино.' }
+    ],
+    stage7: [
+        { title: 'Эмоции через звук', content: 'Низкие частоты создают напряжение, высокие — легкость, тишина усиливает драматизм.' },
+        { title: 'Звуковая драматургия', content: 'Звук направляет внимание слушателя, подчеркивая ключевые моменты сюжета.' },
+        { title: 'ИИ в сторителлинге', content: 'ИИ может генерировать адаптивные саундтреки, реагирующие на действия пользователя.' }
+    ]
+};
+
+function createAccordion(containerId, items) {
+    try {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        items.forEach((item, index) => {
+            const accordionItem = document.createElement('div');
+            accordionItem.classList.add('glass-card', 'glow-border');
+            accordionItem.innerHTML = `
+                <button class="accordion-button neon-text-light text-left text-lg font-medium py-4 px-6" aria-expanded="false" aria-controls="accordion-content-${containerId}-${index}">
+                    <span>${item.title}</span>
+                    <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="accordion-content-${containerId}-${index}" class="accordion-content neon-text-light px-6 pb-4 text-base" style="max-height: 0;">
+                    <p>${item.content}</p>
+                </div>
+            `;
+            container.appendChild(accordionItem);
+
+            const button = accordionItem.querySelector('.accordion-button');
+            const content = accordionItem.querySelector('.accordion-content');
+            button.addEventListener('click', () => {
                 try {
-                    if (oscillator && oscillator.state === 'started') {
-                        oscillator.stop();
-                    }
+                    const isOpen = button.getAttribute('aria-expanded') === 'true';
+                    button.setAttribute('aria-expanded', !isOpen);
+                    content.style.maxHeight = isOpen ? '0' : `${content.scrollHeight}px`;
+                    button.querySelector('svg').style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
                 } catch (e) {
-                    console.error('Cleanup error:', e);
+                    console.error('Accordion toggle error:', e);
                 }
             });
         });
+    } catch (e) {
+        console.error('Accordion creation error:', e);
+    }
+}
+
+createAccordion('accordion-container-5', accordionData.stage5);
+createAccordion('accordion-container-6', accordionData.stage6);
+createAccordion('accordion-container-7', accordionData.stage7);
+
+/* Cleanup on page unload */
+window.addEventListener('unload', () => {
+    try {
+        if (oscillator && oscillator.state === 'started') {
+            oscillator.stop();
+        }
+    } catch (e) {
+        console.error('Cleanup error:', e);
+    }
+});
     </script>
 </body>
 </html>
