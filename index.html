@@ -1,149 +1,100 @@
 <!DOCTYPE html>
-
 <html lang="ru" class="scroll-smooth">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Rifotales Sound Path</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/tone@14.7.58/build/Tone.min.js"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
-
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-
     <style>
-        /* Палитра: мягкие киберпанк-синие оттенки */
-        :root{
-            --bg-1: #071226; /* глубокий тёмно-синий */
-            --bg-2: #07183a; /* чуть светлее */
-            --accent: #60a5fa; /* светло-голубой */
-            --accent-2: #34d399; /* бирюзовый */
-            --neon: #7dd3fc; /* циан */
+        :root {
+            --bg-1: #071226;
+            --bg-2: #07183a;
+            --accent: #60a5fa;
+            --accent-2: #34d399;
+            --neon: #7dd3fc;
             --glass: rgba(18,24,44,0.55);
             --muted: #9aa7c6;
             --grid-line: rgba(125,211,252,0.06);
             --grid-dot: rgba(125,211,252,0.10);
             --glow-strong: rgba(125,211,252,0.95);
         }
-        html,body{height:100%;}
+        html, body { height: 100%; }
         body {
             font-family: 'Roboto', sans-serif;
-            margin:0;
-            background: linear-gradient(180deg,var(--bg-1),var(--bg-2));
+            margin: 0;
+            background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
             color: #e6eef8;
-            overflow-x:hidden;
+            overflow-x: hidden;
         }
-        h1,h2,h3{font-family:'Orbitron',sans-serif}
-
-        /* Канвас фоновый и сетка */
-        #bgCanvas{ position:fixed; inset:0; z-index:-2; width:100%; height:100%; pointer-events:none; mix-blend-mode:screen; }
-        .noise{ position:fixed; inset:0; z-index:-1; opacity:0.06; background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px); background-size:3px 3px; pointer-events:none; }
-
-        header{backdrop-filter: blur(8px); background: linear-gradient(180deg, rgba(6,10,20,0.55), rgba(6,10,20,0.35)); border-bottom:1px solid rgba(96,165,250,0.06)}
-        .nav-link{transition:all .25s ease; color:var(--muted); padding:.25rem .5rem; border-radius:.35rem; position:relative; overflow:hidden;}
-        .nav-link.active{color:var(--accent-2); box-shadow:0 6px 20px rgba(52,211,153,0.06); transform:translateY(-2px)}
-        .nav-link::before{content:''; position:absolute; inset:0; background:var(--accent-2); opacity:0; transition:opacity .3s ease; transform:scaleX(0); transform-origin:left; z-index:-1;}
-        .nav-link.active::before, .nav-link:hover::before{opacity:0.08; transform:scaleX(1);}        
-        .section{min-height:100vh;padding:8rem 1.25rem 4rem;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative}
-        .section::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg, rgba(20,30,50,0.12), rgba(5,8,15,0.35));z-index:0;pointer-events:none}
-        .section-content{z-index:10;width:100%}
-        .glass-card{background:var(--glass);backdrop-filter:blur(10px);border:1px solid rgba(96,165,250,0.09);border-radius:1.25rem;padding:1.5rem;transition:transform .45s cubic-bezier(.2,.9,.2,1), box-shadow .45s;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
-        .glass-card:hover{transform:translateY(-10px) scale(1.01);box-shadow:0 30px 80px rgba(96,165,250,0.08)}
-        .glass-card .mini-legend{font-size:.8rem;color:var(--muted);margin-top:.5rem}
-        .chart-container{position:relative;width:100%;max-width:920px;margin:0 auto;height:320px}
-        .control-slider{accent-color:var(--accent-2); transition:all .3s ease;}
-        .control-slider::-webkit-slider-thumb{box-shadow:0 0 8px var(--accent-2)}
-        .control-slider:hover::-webkit-slider-thumb{box-shadow:0 0 16px var(--accent-2)}
-
-        /* Анимированная граница */
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; }
+        #bgCanvas { position: fixed; inset: 0; z-index: -2; width: 100%; height: 100%; pointer-events: none; mix-blend-mode: screen; }
+        .noise { position: fixed; inset: 0; z-index: -1; opacity: 0.06; background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 3px 3px; pointer-events: none; }
+        header { backdrop-filter: blur(8px); background: linear-gradient(180deg, rgba(6,10,20,0.55), rgba(6,10,20,0.35)); border-bottom: 1px solid rgba(96,165,250,0.06); }
+        .nav-link { transition: all .25s ease; color: var(--muted); padding: .25rem .5rem; border-radius: .35rem; position: relative; overflow: hidden; }
+        .nav-link.active { color: var(--accent-2); box-shadow: 0 6px 20px rgba(52,211,153,0.06); transform: translateY(-2px); }
+        .nav-link::before { content: ''; position: absolute; inset: 0; background: var(--accent-2); opacity: 0; transition: opacity .3s ease, transform .3s ease; transform: scaleX(0); transform-origin: left; z-index: -1; }
+        .nav-link.active::before, .nav-link:hover::before { opacity: 0.08; transform: scaleX(1); }
+        .section { min-height: 100vh; padding: 8rem 1.25rem 4rem; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; }
+        .section::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,30,50,0.12), rgba(5,8,15,0.35)); z-index: 0; pointer-events: none; }
+        .section-content { z-index: 10; width: 100%; }
+        .glass-card { background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(96,165,250,0.09); border-radius: 1.25rem; padding: 1.5rem; transition: transform .45s cubic-bezier(.2,.9,.2,1), box-shadow .45s; box-shadow: 0 8px 30px rgba(2,6,23,0.6); }
+        .glass-card:hover { transform: translateY(-10px) scale(1.01); box-shadow: 0 30px 80px rgba(96,165,250,0.08); }
+        .glass-card .mini-legend { font-size: .8rem; color: var(--muted); margin-top: .5rem; }
+        .chart-container { position: relative; width: 100%; max-width: 920px; margin: 0 auto; height: 320px; }
+        .control-slider { accent-color: var(--accent-2); transition: all .3s ease; }
+        .control-slider::-webkit-slider-thumb { box-shadow: 0 0 8px var(--accent-2); }
+        .control-slider:hover::-webkit-slider-thumb { box-shadow: 0 0 16px var(--accent-2); }
         @keyframes glow-pulse { 0%, 100% { box-shadow: 0 0 8px rgba(125,211,252,0.4), inset 0 0 4px rgba(125,211,252,0.2); } 50% { box-shadow: 0 0 20px rgba(125,211,252,0.8), inset 0 0 10px rgba(125,211,252,0.6); } }
-        .glow-border{position:relative; animation: glow-pulse 3s infinite ease-in-out;}
-        .glow-border::after{content:'';position:absolute;inset:-2px;border-radius:1.25rem;background:linear-gradient(90deg, rgba(125,211,252,0.06), rgba(99,102,241,0.06));filter:blur(12px);opacity:.85;pointer-events:none; transition:opacity .5s ease}
-        .glow-border:hover::after{opacity:1; filter:blur(16px);}        
-
-        /* Волны внутри секций для глубины */
-        .wave-visual{position:absolute;left:0;right:0;bottom:0;height:40%;pointer-events:none;opacity:.08}
-
-        /* Мелкие анимации */
-        .neon-dot{width:10px;height:10px;border-radius:50%;background:var(--neon);box-shadow:0 0 18px var(--neon);opacity:.95}
-        .accordion-button{width:100%;padding:0;background:transparent;border:none;display:flex;justify-content:space-between;align-items:center}
-        .accordion-content{max-height:0;overflow:hidden;transition:max-height .55s cubic-bezier(.22,.9,.2,1)}
-
+        .glow-border { position: relative; animation: glow-pulse 3s infinite ease-in-out; }
+        .glow-border::after { content: ''; position: absolute; inset: -2px; border-radius: 1.25rem; background: linear-gradient(90deg, rgba(125,211,252,0.06), rgba(99,102,241,0.06)); filter: blur(12px); opacity: .85; pointer-events: none; transition: opacity .5s ease, filter .5s ease; }
+        .glow-border:hover::after { opacity: 1; filter: blur(16px); }
+        .wave-visual { position: absolute; left: 0; right: 0; bottom: 0; height: 40%; pointer-events: none; opacity: .08; }
+        .neon-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 18px var(--neon); opacity: .95; }
+        .accordion-button { width: 100%; padding: 0; background: transparent; border: none; display: flex; justify-content: space-between; align-items: center; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height .55s cubic-bezier(.22,.9,.2,1); }
         .sound-wave-anim { animation: sound-bounce 4s ease-out infinite; }
         @keyframes sound-bounce { 0% { transform: scale(0.1); opacity: 0; } 5% { opacity: 1; } 25% { transform: scale(1); opacity: 0; } 100% { transform: scale(1); opacity: 0; } }
         .delay-1 { animation-delay: 0.5s; } .delay-2 { animation-delay: 1s; } .delay-3 { animation-delay: 1.5s; }
-
         .reflection-line { transform-origin: left; animation: bounce-rotate 2s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite; }
         @keyframes bounce-rotate { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(10deg); } }
-
-        @keyframes floaty{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
-        .floaty{animation:floaty 6s ease-in-out infinite}
-
-        /* Киберпанк glitch */
-        @keyframes glitch { /* ... kept from original for effect */ }
-        .glitch-text{ position:relative; display:inline-block; }
-        .glitch-text::before, .glitch-text::after{ content:attr(data-text); position:absolute; top:0; left:0; width:100%; height:100%; }
-        .glitch-text::before{ left:1px; color:var(--glow-strong); animation:glitch 2.5s infinite linear alternate-reverse; }
-        .glitch-text::after{ left:-1px; color:#a855f7; animation:glitch 2.5s infinite linear alternate; }
-
-        .neon-button { position:relative; background: rgba(52, 211, 153, 0.15); border: 1px solid var(--accent-2); box-shadow: 0 0 8px var(--accent-2), inset 0 0 4px var(--accent-2); transition: all 0.3s ease; text-shadow: 0 0 4px var(--accent-2); }
-        .neon-button:hover { background: rgba(52, 211, 153, 0.3); box-shadow: 0 0 16px var(--accent-2), inset 0 0 8px var(--accent-2); }
-
-        /* --- Добавлено: переопределение hover для кнопки «Выключить» (id="stopBtn") чтобы подсвечивалась несмотря на inline-стиль --- */
-        #stopBtn.neon-button:hover{
+        @keyframes floaty { 0% { transform: translateY(0); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0); } }
+        .floaty { animation: floaty 6s ease-in-out infinite; }
+        .neon-button { position: relative; background: rgba(52, 211, 153, 0.15); border: 1px solid var(--accent-2); box-shadow: 0 0 8px var(--accent-2), inset 0 0 4px var(--accent-2); transition: all 0.3s ease; text-shadow: 0 0 4px var(--accent-2); }
+        .neon-button:hover { background: rgba(52, 211, 153, 0.3); box-shadow: 0 0 16px var(--accent-2), inset 0 0 8px var(--accent-2); transform: translateY(-2px) scale(1.03); }
+        #stopBtn.neon-button:hover {
             background: rgba(244, 114, 182, 0.35) !important;
             border-color: #f472b6 !important;
             box-shadow: 0 0 18px #f472b6, inset 0 0 6px #f472b6 !important;
             text-shadow: 0 0 6px #f472b6 !important;
             transform: translateY(-2px) scale(1.03);
         }
-
-        /* Эффект свечения заголовков этапов — приятный, не резкий */
-        .stage-title{
+        .stage-title {
             color: var(--neon);
             text-shadow: 0 2px 8px rgba(125,211,252,0.22), 0 0 18px rgba(125,211,252,0.08);
             transition: text-shadow .35s ease, transform .35s ease;
-            display:inline-block;
+            display: inline-block;
             padding: .05rem .2rem;
             border-radius: .25rem;
         }
-        .stage-title.glow{
-            animation: stageGlow 3.6s ease-in-out infinite;
+        .stage-title.glow { animation: stageGlow 3.6s ease-in-out infinite; }
+        @keyframes stageGlow {
+            0% { text-shadow: 0 2px 6px rgba(125,211,252,0.12), 0 0 10px rgba(125,211,252,0.04); transform: translateY(0); }
+            50% { text-shadow: 0 6px 18px rgba(125,211,252,0.32), 0 0 36px rgba(125,211,252,0.18); transform: translateY(-2px); }
+            100% { text-shadow: 0 2px 6px rgba(125,211,252,0.12), 0 0 10px rgba(125,211,252,0.04); transform: translateY(0); }
         }
-        @keyframes stageGlow{
-            0%{ text-shadow: 0 2px 6px rgba(125,211,252,0.12), 0 0 10px rgba(125,211,252,0.04); transform: translateY(0);} 
-            50%{ text-shadow: 0 6px 18px rgba(125,211,252,0.32), 0 0 36px rgba(125,211,252,0.18); transform: translateY(-2px);} 
-            100%{ text-shadow: 0 2px 6px rgba(125,211,252,0.12), 0 0 10px rgba(125,211,252,0.04); transform: translateY(0);} 
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
         }
-
-        /* Удобство: уменьшить анимацию у пользователей, выбравших reduced motion */
-        @media (prefers-reduced-motion: reduce){
-            *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important}
-        }
-
-        /* Адаптив */
-        @media(min-width:768px){ .section{padding:8rem 4rem 5rem} .chart-container{height:420px} }
-
-        /* Улучшение контраста для легкой читаемости */
-        .neon-text-light{ color:#d8f5ff; text-shadow:0 0 4px rgba(125,211,252,0.06);}        
-
-        /* Стили для интегрированного текста — аккуратно и читаемо */
-        .integrated-text{white-space:normal; color:var(--neon);}
-        .integrated-text ul{list-style:disc; margin-left:1rem; color:#d8f5ff}
-        .integrated-text li{margin-bottom:.5rem}
-
-        /* Улучшения дизайна: больше блоков по шагам, ветки с блоками, этапность */
+        @media (min-width: 768px) { .section { padding: 8rem 4rem 5rem; } .chart-container { height: 420px; } }
+        .neon-text-light { color: #d8f5ff; text-shadow: 0 0 4px rgba(125,211,252,0.06); }
+        .integrated-text { white-space: normal; color: var(--neon); }
+        .integrated-text ul { list-style: disc; margin-left: 1rem; color: #d8f5ff; }
+        .integrated-text li { margin-bottom: .5rem; }
         .step-block { margin-bottom: 2rem; border-left: 4px solid var(--accent-2); padding-left: 1rem; }
         .step-block h5 { font-family: 'Orbitron', sans-serif; font-size: 1.25rem; color: var(--accent-2); margin-bottom: 0.5rem; }
         .branch-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
@@ -152,24 +103,15 @@
         .branch-card h6 { font-size: 1rem; color: var(--neon); margin-bottom: 0.5rem; }
         .stage-progress { display: flex; align-items: center; margin-bottom: 1rem; }
         .stage-progress .step-number { background: var(--accent-2); color: var(--bg-1); font-weight: bold; border-radius: 50%; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; margin-right: 1rem; }
-        .substep-list { list-style-type: none; padding-left: 0; }
-        .substep-list li { margin-bottom: 1rem; padding: 0.75rem; background: rgba(18,24,44,0.35); border-radius: 0.5rem; position: relative; }
-        .substep-list li::before { content: ''; position: absolute; left: -1rem; top: 50%; width: 0.5rem; height: 0.5rem; background: var(--accent); border-radius: 50%; transform: translateY(-50%); }
         .branch-tree { position: relative; padding-left: 2rem; }
         .branch-tree::before { content: ''; position: absolute; left: 1rem; top: 0; bottom: 0; width: 2px; background: var(--muted); opacity: 0.3; }
         .branch-tree .branch-card { margin-left: 1rem; position: relative; }
         .branch-tree .branch-card::before { content: ''; position: absolute; left: -2rem; top: 50%; width: 2rem; height: 2px; background: var(--muted); opacity: 0.3; }
-
     </style>
-
 </head>
-
 <body class="overflow-x-hidden">
-
-    <!-- Фоновый холст для анимированных частиц, сетки и слоистых волн -->
     <canvas id="bgCanvas" aria-hidden="true"></canvas>
     <div class="noise" aria-hidden="true"></div>
-
     <header class="fixed top-0 left-0 w-full z-50">
         <nav class="container mx-auto px-6 py-4">
             <ul class="flex justify-center space-x-4 md:space-x-8 text-sm md:text-base font-medium text-gray-400">
@@ -183,20 +125,18 @@
             </ul>
         </nav>
     </header>
-
     <main>
         <section id="stage1" class="section">
             <div class="section-content text-center mb-12">
                 <h2 class="text-4xl md:text-6xl font-bold text-green-400 mb-4" style="color:var(--accent-2)">
                     <span class="stage-title glow">Этап 1: Природа Звука</span>
                 </h2>
-                <p class="max-w-3xl mx-auto text-lg neon-text-light">Изучите фундаментальные основы. Управляйте параметрами звуковой волны в реальном времени, чтобы наглядно понять ее характеристики и поведение в различных средах. Теперь вы можете услышать то, что видите.</p>
+                <p class="max-w-3xl mx-auto text-lg neon-text-light">Изучите фундаментальные основы. Управляйте параметрами звуковой волны в реальном времени, чтобы наглядно понять ее характеристики и поведение в различных средах.</p>
             </div>
             <div class="section-content w-full max-w-5xl glass-card glow-border">
                 <div class="grid md:grid-cols-3 gap-8 items-center">
                     <div class="md:col-span-2">
                         <canvas id="soundWaveCanvas" class="w-full h-64 bg-transparent rounded-xl shadow-inner" aria-label="Визуализатор звуковой волны"></canvas>
-                        <!-- Небольшой визуальный намёк -->
                         <div class="flex items-center justify-between mt-3">
                             <div class="flex items-center gap-2"><span class="neon-dot floaty" aria-hidden="true"></span><span class="mini-legend" style="color:var(--muted)">Интерактивный визуализатор волны</span></div>
                             <div class="mini-legend" style="color:var(--muted)">Задавайте частоту и амплитуду</div>
@@ -211,10 +151,6 @@
                             <label for="amplitude" class="block mb-2 font-medium" style="color:var(--accent-2)">Громкость: <span id="amplitudeValue">50</span>%</label>
                             <input id="amplitude" type="range" min="0" max="100" value="50" class="w-full h-2 rounded-lg control-slider" aria-labelledby="amplitudeValue">
                         </div>
-                        <div class="text-center p-4 rounded-xl border" style="border-color:rgba(96,165,250,0.08)">
-                            <p class="text-sm" style="color:var(--muted)">Скорость звука</p>
-                            <p id="speedOfSound" class="text-2xl font-bold neon-text-light">343 м/с (в воздухе)</p>
-                        </div>
                         <div class="flex justify-center gap-4">
                             <button id="playBtn" class="neon-button text-white font-bold py-2 px-6 rounded-full transition-colors duration-200" aria-pressed="false">Включить звук</button>
                             <button id="stopBtn" class="neon-button text-white font-bold py-2 px-6 rounded-full transition-colors duration-200" style="background: rgba(244, 114, 182, 0.15); border-color:#f472b6; box-shadow:0 0 8px #f472b6, inset 0 0 4px #f472b6; text-shadow:0 0 4px #f472b6;" aria-pressed="false">Выключить</button>
@@ -222,11 +158,9 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Улучшенная структура: Разбито на шаги с ветками -->
             <div class="section-content w-full max-w-5xl mt-6">
                 <div class="glass-card integrated-text">
-                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Природа звука и его характеристики</h4>
+                    <h4 class="text-xl font-bold stage-title">Природа звука и его характеристики</h4>
                     <div class="branch-tree">
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Звук и его возникновение</h5></div>
@@ -291,10 +225,8 @@
                     </div>
                 </div>
             </div>
-
             <svg class="wave-visual" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path fill="url(#g1)" d="M0,64L48,90.7C96,117,192,171,288,197.3C384,224,480,224,576,197.3C672,171,768,117,864,85.3C960,53,1056,43,1152,48C1248,53,1344,75,1392,85.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" opacity="0.18"></path><defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#0ea5e9" stop-opacity="0.18"></stop><stop offset="1" stop-color="#7dd3fc" stop-opacity="0.08"></stop></linearGradient></defs></svg>
         </section>
-
         <section id="stage2" class="section">
             <div class="section-content text-center mb-12">
                 <h2 class="text-4xl md:text-6xl font-bold mb-4" style="color:var(--accent-2)">
@@ -302,11 +234,9 @@
                 </h2>
                 <p class="max-w-3xl mx-auto text-lg neon-text-light">Звук в пространстве подчиняется сложным законам. Изучите ключевые явления, которые определяют, как мы слышим звук в реальном мире.</p>
             </div>
-
-            <!-- Улучшенная структура: Разбито на шаги с ветками -->
             <div class="section-content w-full max-w-6xl mb-6">
                 <div class="glass-card integrated-text">
-                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Распространение звука в пространстве</h4>
+                    <h4 class="text-xl font-bold stage-title">Распространение звука в пространстве</h4>
                     <div class="branch-tree">
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Законы распространения</h5></div>
@@ -389,7 +319,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="section-content w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="glass-card flex flex-col items-center justify-center p-8 relative overflow-hidden">
                     <h3 class="text-2xl font-bold mb-4 neon-text-light">Отражение (Рефлексия)</h3>
@@ -406,51 +335,48 @@
                 </div>
                 <div class="glass-card">
                     <h3 class="text-2xl font-bold mb-2 neon-text-light">Преломление (Рефракция)</h3>
-                    <p class="neon-text-light">Волна изменяет направление при переходе из одной среды в другую (например, из воздуха в воду) или при изменении свойств среды (температуры).</p>
+                    <p class="neon-text-light">Волна изменяет направление при переходе из одной среды в другую или при изменении свойств среды.</p>
                 </div>
                 <div class="glass-card">
                     <h3 class="text-2xl font-bold mb-2 neon-text-light">Дифракция</h3>
-                    <p class="neon-text-light">Способность звуковых волн огибать препятствия. Благодаря дифракции мы можем слышать звук из-за угла, даже не видя его источника.</p>
+                    <p class="neon-text-light">Способность звуковых волн огибать препятствия, позволяя слышать звук за углом.</p>
                 </div>
                 <div class="glass-card">
                     <h3 class="text-2xl font-bold mb-2 neon-text-light">Интерференция</h3>
-                    <p class="neon-text-light">Сложение двух или более волн. Если фазы совпадают (конструктивная), амплитуда увеличивается. Если фазы в противофазе (деструктивная), они гасят друг друга.</p>
+                    <p class="neon-text-light">Сложение волн: конструктивная усиливает звук, деструктивная ослабляет.</p>
                 </div>
                 <div class="glass-card">
                     <h3 class="text-2xl font-bold mb-2 neon-text-light">Рассеивание</h3>
-                    <p class="neon-text-light">Отражение звука от неровной поверхности во многих направлениях. Диффузоры в студиях используют этот принцип для создания более равномерного звукового поля.</p>
+                    <p class="neon-text-light">Отражение звука от неровных поверхностей для равномерного звукового поля.</p>
                 </div>
                 <div class="glass-card">
                     <h3 class="text-2xl font-bold mb-2 neon-text-light">Поглощение</h3>
-                    <p class="neon-text-light">Преобразование звуковой энергии в тепловую при прохождении через материал. Мягкие и пористые материалы хорошо поглощают звук.</p>
+                    <p class="neon-text-light">Преобразование звуковой энергии в тепло мягкими материалами.</p>
                 </div>
             </div>
         </section>
-
         <section id="stage3" class="section">
             <div class="section-content text-center mb-12">
                 <h2 class="text-4xl md:text-6xl font-bold mb-4" style="color:var(--accent-2)">
                     <span class="stage-title glow">Этап 3: Акустика Помещений</span>
                 </h2>
-                <p class="max-w-3xl mx-auto text-lg neon-text-light">Каждое пространство звучит по-своему. Поймите, как геометрия и материалы формируют акустическую среду и влияют на наше восприятие звука.</p>
+                <p class="max-w-3xl mx-auto text-lg neon-text-light">Поймите, как геометрия и материалы формируют акустическую среду.</p>
             </div>
             <div class="section-content w-full max-w-5xl space-y-6">
                 <div class="glass-card">
                     <h3 class="text-2xl font-bold mb-2 neon-text-light">Реверберация</h3>
-                    <p class="neon-text-light">Это процесс затухания звука в помещении после выключения источника. Он состоит из множества отражений, приходящих к слушателю с разных сторон. Время реверберации (RT60) — ключевой параметр акустики помещения.</p>
+                    <p class="neon-text-light">Затухание звука в помещении после выключения источника, измеряемое RT60.</p>
                 </div>
                 <div class="glass-card">
                     <h3 class="text-2xl font-bold mb-2 neon-text-light">Акустическая Изоляция</h3>
-                    <p class="neon-text-light">Меры, направленные на снижение проникновения звука из одного помещения в другое. Включает в себя использование массивных материалов, многослойных конструкций и виброразвязки.</p>
+                    <p class="neon-text-light">Снижение проникновения звука с помощью массивных материалов и виброразвязки.</p>
                 </div>
                 <div class="glass-card">
                     <h3 class="text-2xl font-bold mb-2 neon-text-light">Цифровое Моделирование</h3>
-                    <p class="neon-text-light">Современное программное обеспечение позволяет создавать точные 3D-модели помещений и симулировать распространение звука в них, предсказывая акустические параметры еще на этапе проектирования.</p>
+                    <p class="neon-text-light">Симуляция акустики помещений с помощью 3D-моделей.</p>
                 </div>
-
-                <!-- Улучшенная структура: Разбито на шаги с ветками -->
                 <div class="glass-card integrated-text">
-                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Акустика помещений</h4>
+                    <h4 class="text-xl font-bold stage-title">Акустика помещений</h4>
                     <div class="branch-tree">
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Влияние материалов и геометрии</h5></div>
@@ -468,7 +394,7 @@
                         </div>
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">2</span><h5>Шаг 2: Реверберация</h5></div>
-                            <p>Многократные отражения звука, их измерение и воздействие на восприятие.</p>
+                            <p>Многократные отражения звука, их измерение и воздействие.</p>
                             <div class="branch-container">
                                 <div class="branch-card">
                                     <h6>Ветка 2.1: Отражения</h6>
@@ -502,27 +428,23 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
-        
         <section id="stage4" class="section">
             <div class="section-content text-center mb-12">
                 <h2 class="text-4xl md:text-6xl font-bold mb-4" style="color:var(--accent-2)">
                     <span class="stage-title glow">Этап 4: Психоакустика</span>
                 </h2>
-                <p class="max-w-3xl mx-auto text-lg neon-text-light">Узнайте, как наш мозг интерпретирует звуковые волны. Этот график показывает кривые равной громкости: звуки разных частот должны иметь разную физическую интенсивность, чтобы восприниматься нами как одинаково громкие.</p>
+                <p class="max-w-3xl mx-auto text-lg neon-text-light">Узнайте, как мозг интерпретирует звуки, через кривые равной громкости.</p>
             </div>
             <div class="section-content w-full max-w-5xl glass-card glow-border">
                 <div class="chart-container">
                     <canvas id="psychoacousticsChart"></canvas>
                 </div>
             </div>
-
-            <!-- Улучшенная структура: Разбито на шаги с ветками -->
             <div class="section-content w-full max-w-5xl mt-6">
                 <div class="glass-card integrated-text">
-                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Психоакустика</h4>
+                    <h4 class="text-xl font-bold stage-title">Психоакустика</h4>
                     <div class="branch-tree">
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Физиология слуха</h5></div>
@@ -593,21 +515,17 @@
                     </div>
                 </div>
             </div>
-
         </section>
-
         <section id="stage5" class="section">
             <div class="section-content text-center mb-12">
                 <h2 class="text-4xl md:text-6xl font-bold mb-4" style="color:var(--accent-2)">
                     <span class="stage-title glow">Этап 5: Звукозапись и Обработка</span>
                 </h2>
-                <p class="max-w-3xl mx-auto text-lg neon-text-light">От микрофона до цифровой станции — освойте инструменты и техники, которые лежат в основе создания любого современного аудиоконтента.</p>
+                <p class="max-w-3xl mx-auto text-lg neon-text-light">Освойте инструменты и техники создания аудиоконтента.</p>
             </div>
-
-            <!-- Улучшенная структура: Разбито на шаги с ветками -->
             <div class="section-content w-full max-w-5xl mb-6">
                 <div class="glass-card integrated-text">
-                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Звукозапись и обработка</h4>
+                    <h4 class="text-xl font-bold stage-title">Звукозапись и обработка</h4>
                     <div class="branch-tree">
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Оборудование</h5></div>
@@ -702,23 +620,18 @@
                     </div>
                 </div>
             </div>
-
-            <div id="accordion-container-5" class="section-content w-full max-w-5xl space-y-4">
-            </div>
+            <div id="accordion-container-5" class="section-content w-full max-w-5xl space-y-4"></div>
         </section>
-        
         <section id="stage6" class="section">
             <div class="section-content text-center mb-12">
                 <h2 class="text-4xl md:text-6xl font-bold mb-4" style="color:var(--accent-2)">
                     <span class="stage-title glow">Этап 6: Звукорежиссура в Медиа</span>
                 </h2>
-                <p class="max-w-3xl mx-auto text-lg neon-text-light">Звук играет ключевую роль в кино, играх и VR. Изучите специфику создания звуковых миров для разных платформ.</p>
+                <p class="max-w-3xl mx-auto text-lg neon-text-light">Изучите создание звуковых миров для кино, игр и VR.</p>
             </div>
-
-            <!-- Улучшенная структура: Разбито на шаги с ветками -->
             <div class="section-content w-full max-w-5xl mb-6">
                 <div class="glass-card integrated-text">
-                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Звукорежиссура в медиа</h4>
+                    <h4 class="text-xl font-bold stage-title">Звукорежиссура в медиа</h4>
                     <div class="branch-tree">
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Звук в кино</h5></div>
@@ -740,7 +653,7 @@
                         </div>
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">2</span><h5>Шаг 2: Звук в играх</h5></div>
-                            <p>Динамическое аудио и интерактивные элементы звукового дизайна.</p>
+                            <p>Динамическое аудио и интерактивные элементы.</p>
                             <div class="branch-container">
                                 <div class="branch-card">
                                     <h6>Ветка 2.1: Динамическое аудио</h6>
@@ -754,7 +667,7 @@
                         </div>
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">3</span><h5>Шаг 3: Звук в VR/AR</h5></div>
-                            <p>Пространственное аудио для виртуальной и дополненной реальности.</p>
+                            <p>Пространственное аудио для виртуальной реальности.</p>
                             <div class="branch-container">
                                 <div class="branch-card">
                                     <h6>Ветка 3.1: Пространственное аудио</h6>
@@ -764,7 +677,7 @@
                         </div>
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">4</span><h5>Шаг 4: Бинауральный звук</h5></div>
-                            <p>Техники записи и воспроизведения для эффекта присутствия.</p>
+                            <p>Техники записи для эффекта присутствия.</p>
                             <div class="branch-container">
                                 <div class="branch-card">
                                     <h6>Ветка 4.1: Запись</h6>
@@ -774,7 +687,7 @@
                         </div>
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">5</span><h5>Шаг 5: Пространственный звук</h5></div>
-                            <p>Технологии 3D-аудио для игр, кино и VR.</p>
+                            <p>Технологии 3D-аудио для игр и кино.</p>
                             <div class="branch-container">
                                 <div class="branch-card">
                                     <h6>Ветка 5.1: Технологии</h6>
@@ -785,23 +698,18 @@
                     </div>
                 </div>
             </div>
-
-            <div id="accordion-container-6" class="section-content w-full max-w-5xl space-y-4">
-            </div>
+            <div id="accordion-container-6" class="section-content w-full max-w-5xl space-y-4"></div>
         </section>
-        
         <section id="stage7" class="section">
             <div class="section-content text-center mb-12">
                 <h2 class="text-4xl md:text-6xl font-bold mb-4" style="color:var(--accent-2)">
                     <span class="stage-title glow">Этап 7: Сторителлинг через Звук</span>
                 </h2>
-                <p class="max-w-3xl mx-auto text-lg neon-text-light">Звук — это мощный инструмент повествования. Научитесь использовать его для вызова эмоций, создания атмосферы и ведения сюжета.</p>
+                <p class="max-w-3xl mx-auto text-lg neon-text-light">Используйте звук для создания эмоций и атмосферы.</p>
             </div>
-
-            <!-- Улучшенная структура: Разбито на шаги с ветками -->
             <div class="section-content w-full max-w-5xl mb-6">
                 <div class="glass-card integrated-text">
-                    <h4 class="text-xl font-bold stage-title" style="display:inline-block">Сторителлинг через звук</h4>
+                    <h4 class="text-xl font-bold stage-title">Сторителлинг через звук</h4>
                     <div class="branch-tree">
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">1</span><h5>Шаг 1: Основы сторителлинга</h5></div>
@@ -829,7 +737,7 @@
                         </div>
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">3</span><h5>Шаг 3: Звуковая драматургия</h5></div>
-                            <p>Звуковые решения для усиления сюжета и атмосферы.</p>
+                            <p>Звуковые решения для усиления сюжета.</p>
                             <div class="branch-container">
                                 <div class="branch-card">
                                     <h6>Ветка 3.1: Саспенс</h6>
@@ -849,7 +757,7 @@
                         </div>
                         <div class="step-block">
                             <div class="stage-progress"><span class="step-number">5</span><h5>Шаг 5: ИИ в сторителлинге</h5></div>
-                            <p>Применение искусственного интеллекта для интерактивных аудиорешений.</p>
+                            <p>Применение ИИ для интерактивных аудиорешений.</p>
                             <div class="branch-container">
                                 <div class="branch-card">
                                     <h6>Ветка 5.1: Генерация</h6>
@@ -860,125 +768,78 @@
                     </div>
                 </div>
             </div>
-
-            <div id="accordion-container-7" class="section-content w-full max-w-5xl space-y-4">
-            </div>
+            <div id="accordion-container-7" class="section-content w-full max-w-5xl space-y-4"></div>
         </section>
     </main>
-
     <script>
-        /* ------------------ Фоновая анимация (частицы + волнообразная лабораторная сетка) ------------------ */
+        /* Background Animation (Simplified Particles) */
         (function(){
             const c = document.getElementById('bgCanvas');
             const ctx = c.getContext('2d');
             let w = 0, h = 0, dpr = window.devicePixelRatio || 1;
             let particles = [];
-            const PARTICLE_COUNT = 55;
+            const PARTICLE_COUNT = 20; // Further reduced for performance
 
-            function resize(){
-                dpr = window.devicePixelRatio || 1;
-                w = innerWidth; h = innerHeight; c.width = w * dpr; c.height = h * dpr; c.style.width = w+'px'; c.style.height = h+'px'; ctx.setTransform(dpr,0,0,dpr,0,0);
+            function resize() {
+                try {
+                    dpr = window.devicePixelRatio || 1;
+                    w = window.innerWidth;
+                    h = window.innerHeight;
+                    c.width = w * dpr;
+                    c.height = h * dpr;
+                    c.style.width = w + 'px';
+                    c.style.height = h + 'px';
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                    initParticles();
+                } catch (e) {
+                    console.error('Canvas resize error:', e);
+                }
             }
 
-            function rand(min,max){return Math.random()*(max-min)+min}
+            function rand(min, max) { return Math.random() * (max - min) + min; }
 
-            function initParticles(){
+            function initParticles() {
                 particles = [];
-                for(let i=0;i<PARTICLE_COUNT;i++){
-                    particles.push({x:rand(0,w), y:rand(0,h), r:rand(0.8,3.6), vx:rand(-0.12,0.12), vy:rand(-0.06,0.06), alpha:rand(0.06,0.3), hue:rand(190,220)})
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    particles.push({
+                        x: rand(0, w),
+                        y: rand(0, h),
+                        r: rand(1, 3),
+                        vx: rand(-0.2, 0.2),
+                        vy: rand(-0.2, 0.2),
+                        alpha: rand(0.1, 0.4)
+                    });
                 }
             }
 
-            function drawParticles(){
-                particles.forEach(p=>{
-                    p.x += p.vx; p.y += p.vy;
-                    if(p.x< -20) p.x = w+20; if(p.x> w+20) p.x=-20;
-                    if(p.y< -20) p.y = h+20; if(p.y> h+20) p.y=-20;
-                    const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*10);
-                    g.addColorStop(0,'hsla('+p.hue+',85%,65%,'+ (p.alpha*0.9) +')');
-                    g.addColorStop(1,'hsla('+p.hue+',85%,60%,0)');
-                    ctx.beginPath(); ctx.fillStyle = g; ctx.arc(p.x,p.y,p.r*6,0,Math.PI*2); ctx.fill();
-                })
-            }
-
-            // Функция рисует лабораторную сетку и деформирует её волнами
-            function drawGrid(time){
-                const spacing = Math.max(28, Math.min(48, w/40)); // адаптивный шаг
-                ctx.save();
-                ctx.globalCompositeOperation = 'overlay';
-                ctx.lineWidth = 1;
-                ctx.strokeStyle = 'rgba(125,211,252,0.06)';
-
-                // Вертикальные линии
-                for(let x = 0; x < w + spacing; x += spacing){
-                    ctx.beginPath();
-                    for(let y = 0; y <= h; y += 6){
-                        const wave = Math.sin((x*0.02) + (time*0.0008) + (y*0.01)) * 6; // вертикальная деформация
-                        if(y===0) ctx.moveTo(x, y + wave);
-                        else ctx.lineTo(x, y + wave);
-                    }
-                    ctx.stroke();
+            function drawParticles() {
+                try {
+                    ctx.clearRect(0, 0, c.width, c.height);
+                    particles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        if (p.x < -20) p.x = w + 20;
+                        if (p.x > w + 20) p.x = -20;
+                        if (p.y < -20) p.y = h + 20;
+                        if (p.y > h + 20) p.y = -20;
+                        ctx.beginPath();
+                        ctx.fillStyle = `rgba(125,211,252,${p.alpha})`;
+                        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                    requestAnimationFrame(drawParticles);
+                } catch (e) {
+                    console.error('Particle animation error:', e);
                 }
-
-                // Горизонтальные линии
-                for(let y = 0; y < h + spacing; y += spacing){
-                    ctx.beginPath();
-                    for(let x = 0; x <= w; x += 6){
-                        const wave = Math.cos((y*0.02) + (time*0.0009) + (x*0.01)) * 6; // горизонтальная деформация
-                        if(x===0) ctx.moveTo(x + wave, y);
-                        else ctx.lineTo(x + wave, y);
-                    }
-                    ctx.stroke();
-                }
-
-                // Точки узлов для лабораторной эстетики
-                ctx.fillStyle = 'rgba(125,211,252,0.04)';
-                for(let x = 0; x < w; x += spacing*2){
-                    for(let y = 0; y < h; y += spacing*2){
-                        const waveX = Math.sin((x*0.01)+(time*0.0007))*4;
-                        const waveY = Math.cos((y*0.01)+(time*0.0007))*4;
-                        ctx.beginPath(); ctx.arc(x+waveX, y+waveY, 0.9, 0, Math.PI*2); ctx.fill();
-                    }
-                }
-
-                ctx.restore();
             }
 
-            // Слоистые синусоиды для глубины
-            function drawWaves(t){
-                const layers = [ {amp:60, speed:0.0009, hue:200, alpha:0.06, freq:0.0009}, {amp:28, speed:0.0016, hue:210, alpha:0.08, freq:0.0016}, {amp:14, speed:0.0026, hue:225, alpha:0.12, freq:0.0028} ];
-                layers.forEach((L,i)=>{
-                    ctx.beginPath();
-                    ctx.moveTo(0, h*0.7);
-                    const A = L.amp; const freq = 0.0025 + i*0.0008;
-                    for(let x=0;x<w;x+=8){
-                        const y = h*0.7 + Math.sin((x * freq) + t*L.speed) * (A * (1 + Math.sin(t*0.0008+i)));
-                        ctx.lineTo(x,y);
-                    }
-                    ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
-                    ctx.fillStyle = 'hsla('+L.hue+',80%,60%,'+L.alpha+')'; ctx.fill();
-                })
-            }
-
-            let last = performance.now();
-            function loop(now){
-                const dt = now-last; last=now;
-                ctx.clearRect(0,0,w,h);
-
-                // Сетка (рисуем первой, затем волны, затем частицы)
-                drawGrid(now);
-                drawWaves(now);
-                drawParticles();
-                requestAnimationFrame(loop);
-            }
-
-            window.addEventListener('resize', ()=>{resize(); initParticles();});
-            resize(); initParticles(); requestAnimationFrame(loop);
+            window.addEventListener('resize', resize);
+            resize();
+            drawParticles();
         })();
 
-        /* ------------------ Основное взаимодействие (интерактивный звук) ------------------ */
+        /* Interactive Audio and Sound Wave Visualization */
         document.addEventListener('DOMContentLoaded', () => {
-
             const canvas = document.getElementById('soundWaveCanvas');
             const ctx = canvas.getContext('2d');
             const frequencySlider = document.getElementById('frequency');
@@ -987,284 +848,276 @@
             const amplitudeValue = document.getElementById('amplitudeValue');
             const playBtn = document.getElementById('playBtn');
             const stopBtn = document.getElementById('stopBtn');
+            let width, height, oscillator;
 
-            let width, height;
-            let oscillator, gainNode;
-
-            // Инициализация аудиоконтекста и узлов Tone.js
-            function initAudio() {
-                if (!oscillator) {
-                    oscillator = new Tone.Oscillator().connect(Tone.getContext().createGain());
-                    gainNode = new Tone.Gain().toDestination();
-                    oscillator.connect(gainNode);
+            function resizeCanvas() {
+                try {
+                    const dpr = window.devicePixelRatio || 1;
+                    const rect = canvas.getBoundingClientRect();
+                    canvas.width = rect.width * dpr;
+                    canvas.height = rect.height * dpr;
+                    canvas.style.width = rect.width + 'px';
+                    canvas.style.height = rect.height + 'px';
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                    width = rect.width;
+                    height = rect.height;
+                } catch (e) {
+                    console.error('Canvas resize error:', e);
                 }
             }
 
-            function startAudio() {
-                if (Tone.context.state !== 'running') {
-                    Tone.start();
+            function drawWave() {
+                try {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    const frequency = parseFloat(frequencySlider.value);
+                    const amplitude = parseFloat(amplitudeSlider.value);
+                    frequencyValue.textContent = frequency.toFixed(0);
+                    amplitudeValue.textContent = amplitude.toFixed(0);
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = 'rgba(52,211,153,0.9)';
+                    ctx.lineWidth = 2;
+                    for (let x = 0; x < width; x++) {
+                        const y = height / 2 + (amplitude / 100 * 50) * Math.sin(x * (frequency / 1000) * Math.PI + Date.now() / 500);
+                        if (x === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                    requestAnimationFrame(drawWave);
+                } catch (e) {
+                    console.error('Wave drawing error:', e);
                 }
-                initAudio();
-                oscillator.start();
-                updateAudioParams();
-                playBtn.setAttribute('aria-pressed', 'true');
+            }
+
+            async function startAudio() {
+                try {
+                    if (Tone.context.state !== 'running') {
+                        await Tone.start();
+                    }
+                    if (!oscillator) {
+                        oscillator = new Tone.Oscillator({
+                            frequency: parseFloat(frequencySlider.value),
+                            volume: -20
+                        }).toDestination();
+                        oscillator.start();
+                    }
+                    playBtn.setAttribute('aria-pressed', 'true');
+                    stopBtn.setAttribute('aria-pressed', 'false');
+                } catch (e) {
+                    console.error('Audio start error:', e);
+                }
             }
 
             function stopAudio() {
-                if (oscillator) {
-                    try{oscillator.stop();}catch(e){}
+                try {
+                    if (oscillator) {
+                        oscillator.stop();
+                        oscillator = null;
+                    }
+                    playBtn.setAttribute('aria-pressed', 'false');
+                    stopBtn.setAttribute('aria-pressed', 'true');
+                } catch (e) {
+                    console.error('Audio stop error:', e);
                 }
-                playBtn.setAttribute('aria-pressed', 'false');
             }
 
             function updateAudioParams() {
-                if (oscillator && oscillator.state === 'started') {
-                    const frequency = parseFloat(frequencySlider.value);
-                    const amplitude = parseFloat(amplitudeSlider.value);
-                    oscillator.frequency.value = frequency;
-                    gainNode.gain.value = amplitude / 100;
+                try {
+                    if (oscillator) {
+                        oscillator.frequency.setValueAtTime(parseFloat(frequencySlider.value), Tone.now());
+                        oscillator.volume.value = -20 + (parseFloat(amplitudeSlider.value) / 100 * 20);
+                    }
+                } catch (e) {
+                    console.error('Audio params update error:', e);
                 }
             }
 
-            function resizeCanvas() {
-                const dpr = window.devicePixelRatio || 1;
-                const rect = canvas.getBoundingClientRect();
-                canvas.width = rect.width * dpr;
-                canvas.height = rect.height * dpr;
-                ctx.setTransform(dpr,0,0,dpr,0,0);
-                width = canvas.width / dpr;
-                height = canvas.height / dpr;
-                draw();
-            }
-
-            function draw() {
-                if (!ctx) return;
-                const frequency = parseFloat(frequencySlider.value);
-                const amplitude = parseFloat(amplitudeSlider.value);
-                frequencyValue.textContent = `${frequency.toFixed(0)}`;
-                amplitudeValue.textContent = `${amplitude.toFixed(0)}`;
-
-                ctx.clearRect(0, 0, width, height);
-                // Многослойные линии с неоновым свечением
-                const lines = [ {w:10, a:0.12, col:'rgba(125,211,252,0.14)', blur: 18, color: '#7dd3fc'}, {w:4, a:0.9, col:'rgba(52,211,153,0.95)', blur: 8, color: '#34d399'} ];
-                lines.forEach((L, idx)=>{
-                    ctx.beginPath();
-                    ctx.moveTo(0, height / 2);
-                    ctx.lineWidth = L.w;
-                    ctx.strokeStyle = L.col;
-                    ctx.shadowBlur = L.blur;
-                    ctx.shadowColor = L.color;
-                    for (let x = 0; x < width; x++) {
-                        const y = height / 2 + (amplitude/100 * 50) * Math.sin(x * (frequency / 100) * Math.PI / 180 + (Date.now()%2000)/2000 * Math.PI * 2 * (1+idx*0.25));
-                        ctx.lineTo(x, y);
-                    }
-                    ctx.stroke();
-                    ctx.shadowBlur = 0;
-                });
-            }
-
-            frequencySlider.addEventListener('input', () => { draw(); updateAudioParams(); });
-            amplitudeSlider.addEventListener('input', () => { draw(); updateAudioParams(); });
+            frequencySlider.addEventListener('input', () => { updateAudioParams(); });
+            amplitudeSlider.addEventListener('input', () => { updateAudioParams(); });
             playBtn.addEventListener('click', startAudio);
             stopBtn.addEventListener('click', stopAudio);
             window.addEventListener('resize', resizeCanvas);
             resizeCanvas();
+            drawWave();
 
-            // Анимация визуализатора
-            let animationFrameId;
-            function animateCanvas() {
-                draw();
-                animationFrameId = requestAnimationFrame(animateCanvas);
-            }
-            animateCanvas();
-
-            /* График: психоакустика */
-            const chartCtx = document.getElementById('psychoacousticsChart').getContext('2d');
-            const psychoacousticsChart = new Chart(chartCtx, {
-                type: 'line',
-                data: {
-                    labels: ['20', '50', '100', '200', '500', '1k', '2k', '4k', '8k', '16k'],
-                    datasets: [{
-                        label: '40 Фон (тихо)',
-                        data: [90, 62, 49, 38, 32, 40, 35, 22, 30, 50],
-                        borderColor: '#60a5fa',
-                        backgroundColor: '#60a5fa20',
-                        tension: 0.4,
-                        borderWidth: 3,
-                    }, {
-                        label: '70 Фон (нормально)',
-                        data: [105, 82, 74, 68, 65, 70, 68, 60, 64, 78],
-                        borderColor: '#a855f7',
-                        backgroundColor: '#a855f720',
-                        tension: 0.4,
-                        borderWidth: 3,
-                    }, {
-                        label: '100 Фон (громко)',
-                        data: [120, 108, 103, 100, 98, 100, 100, 95, 100, 105],
-                        borderColor: '#f472b6',
-                        backgroundColor: '#f472b620',
-                        tension: 0.4,
-                        borderWidth: 3,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Кривые равной громкости (ISO 226:2003)',
-                            color: '#e2e8f0',
-                            font: { size: 18, family: 'Orbitron' }
-                        },
-                        legend: {
-                            labels: { color: '#e2e8f0', font: { size: 14 } }
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(6,10,20,0.9)',
-                            titleColor: '#e2e8f0',
-                            bodyColor: '#e2e8f0',
-                            borderColor: 'rgba(125,211,252,0.25)',
-                            borderWidth: 1
-                        }
+            /* Psychoacoustics Chart */
+            try {
+                const chartCtx = document.getElementById('psychoacousticsChart').getContext('2d');
+                new Chart(chartCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['20', '50', '100', '200', '500', '1k', '2k', '4k', '8k', '16k'],
+                        datasets: [
+                            {
+                                label: '40 Фон (тихо)',
+                                data: [90, 62, 49, 38, 32, 40, 35, 22, 30, 50],
+                                borderColor: '#60a5fa',
+                                backgroundColor: '#60a5fa20',
+                                tension: 0.4,
+                                borderWidth: 3
+                            },
+                            {
+                                label: '70 Фон (нормально)',
+                                data: [105, 82, 74, 68, 65, 70, 68, 60, 64, 78],
+                                borderColor: '#a855f7',
+                                backgroundColor: '#a855f720',
+                                tension: 0.4,
+                                borderWidth: 3
+                            },
+                            {
+                                label: '100 Фон (громко)',
+                                data: [120, 108, 103, 100, 98, 100, 100, 95, 100, 105],
+                                borderColor: '#f472b6',
+                                backgroundColor: '#f472b620',
+                                tension: 0.4,
+                                borderWidth: 3
+                            }
+                        ]
                     },
-                    scales: {
-                        x: {
-                            title: { display: true, text: 'Частота (Hz)', color: '#9fb3d9' },
-                            ticks: { color: '#9fb3d9' },
-                            grid: { color: 'rgba(99,102,241,0.06)' }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Кривые равной громкости (ISO 226:2003)',
+                                color: '#e2e8f0',
+                                font: { size: 18, family: 'Orbitron' }
+                            },
+                            legend: { labels: { color: '#e2e8f0', font: { size: 14 } } }
                         },
-                        y: {
-                            title: { display: true, text: 'Уровень звукового давления (dB SPL)', color: '#9fb3d9' },
-                            ticks: { color: '#9fb3d9' },
-                            grid: { color: 'rgba(99,102,241,0.06)' }
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Частота (Гц)', color: '#e2e8f0', font: { size: 14, family: 'Roboto' } },
+                                ticks: { color: '#e2e8f0' },
+                                grid: { color: 'rgba(125,211,252,0.1)' }
+                            },
+                            y: {
+                                title: { display: true, text: 'Уровень звукового давления (дБ SPL)', color: '#e2e8f0', font: { size: 14, family: 'Roboto' } },
+                                ticks: { color: '#e2e8f0' },
+                                grid: { color: 'rgba(125,211,252,0.1)' }
+                            }
                         }
                     }
-                }
-            });
-
-/* Данные аккордеонов */
-const accordionData = {
-    5: [
-        { title: "Оборудование для записи", content: "Знакомство с различными видами микрофонов (динамическими, конденсаторными), аудиоинтерфейсами и цифровыми рекордерами. Узнайте, как выбрать подходящее оборудование для ваших задач, от записи вокала до полевых записей." },
-        { title: "Техники записи", content: "От основ акустики до тонкостей размещения микрофонов. Изучите методы, такие как запись M/S (Mid-Side), X/Y и Decca Tree, чтобы достичь желаемого стереоэффекта и пространственной глубины." },
-        { title: "Цифровая обработка звука (DSP)", content: "Освойте основы работы с DAW (Digital Audio Workstation), включая редактирование, эквализацию (EQ) для коррекции тембра, компрессию для управления динамическим диапазоном и реверберацию для создания ощущения пространства." },
-        { title: "Синтез звука", content: "Погрузитесь в мир создания звуков с нуля. Изучите методы, такие как субтрактивный, FM и гранулярный синтез, чтобы создавать уникальные звуковые текстуры и эффекты для вашего проекта." },
-        { title: "Микрофонные технологии", content: "Углубитесь в современные виды микрофонов. Узнайте, как различать их по направленности (кардиоидные, всенаправленные, двунаправленные) и как их характеристики влияют на конечный результат записи." }
-    ],
-    6: [
-        { title: "Звук в кино", content: "Поймите, как звукорежиссёры создают иммерсивные миры для фильмов. Изучите роль диалогов, звуковых эффектов (SFX), фонового шума (ambient) и музыки в построении атмосферы и эмоционального воздействия на зрителя." },
-        { title: "Звук в играх", content: "Разберитесь в принципах интерактивного аудио. Узнайте, как звуковые элементы, такие как звуки шагов, выстрелов и музыки, динамично изменяются в зависимости от действий игрока, создавая уникальный игровой опыт." },
-        { title: "Звук в VR/AR", content: "Исследуйте особенности создания звука для виртуальной и дополненной реальности. Погрузитесь в концепцию пространственного аудио, где звук движется вместе с виртуальным объектом, создавая полный эффект присутствия." },
-        { title: "Бинауральный звук", content: "Изучение методов записи и воспроизведения бинаурального звука для создания эффекта присутствия. Узнайте, как использовать HRTF (Head-Related Transfer Function) для симуляции, как звук достигает ушей слушателя." },
-        { title: "Технологии пространственного звука", content: "Разработка и использование технологий для создания трехмерного звука в играх, кино и VR. От Dolby Atmos до Ambisonics — освойте инструменты для построения сложных и реалистичных звуковых ландшафтов." }
-    ],
-    7: [
-        { title: "Основы сторителлинга", content: "Изучите принципы построения повествования, включая структуру, персонажей и конфликт. Поймите, как звук может служить мощным инструментом для усиления этих элементов." },
-        { title: "Звук и эмоции", content: "Разберитесь в том, как различные звуковые паттерны, частоты и тембры влияют на эмоциональное восприятие аудитории. Узнайте, как с помощью звука создать напряжение, радость, страх или покой." },
-        { title: "Звуковая драматургия", content: "Разработка звуковых решений, которые поддерживают сюжет и атмосферу. Узнайте, как использовать звук, чтобы предвещать события, создавать саспенс или раскрывать характер персонажей." },
-        { title: "Интерактивный сторителлинг", content: "Создание интерактивных аудиоисторий с использованием современных технологий. Поймите, как сделать так, чтобы действия пользователя влияли на звуковое окружение и развитие сюжета." },
-        { title: "Потенциал ИИ", content: "Исследуйте применение искусственного интеллекта в создании интерактивных звуковых решений. Узнайте, как ИИ может генерировать уникальные звуковые ландшафты, адаптирующиеся к повествованию в реальном времени." }
-    ]
-};
-
-function createAccordion(containerId, data) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    data.forEach((item) => {
-        const div = document.createElement('div');
-        div.className = 'glass-card overflow-hidden';
-        div.innerHTML = `
-            <button class="accordion-button p-4">
-                <h3 class="text-xl font-bold neon-text-light">${item.title}</h3>
-                <span class="text-2xl transition-transform duration-300 neon-text-light">+</span>
-            </button>
-            <div class="accordion-content p-4">
-                <p class="neon-text-light">${item.content}</p>
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}
-
-createAccordion('accordion-container-5', accordionData[5]);
-createAccordion('accordion-container-6', accordionData[6]);
-createAccordion('accordion-container-7', accordionData[7]);
-
-document.querySelectorAll('[id^="accordion-container-"]').forEach(container => {
-    container.addEventListener('click', (e) => {
-        const button = e.target.closest('.accordion-button');
-        if (button) {
-            const content = button.nextElementSibling;
-            const icon = button.querySelector('span');
-            const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
-
-            container.querySelectorAll('.accordion-content').forEach(el => {
-                if (el !== content) {
-                    el.style.maxHeight = null;
-                    el.previousElementSibling.querySelector('span').style.transform = 'rotate(0deg)';
-                    el.previousElementSibling.querySelector('span').textContent = '+';
-                }
-            });
-
-            if (isOpen) {
-                content.style.maxHeight = null;
-                icon.style.transform = 'rotate(0deg)';
-                icon.textContent = '+';
-            } else {
-                content.style.maxHeight = content.scrollHeight + "px";
-                icon.style.transform = 'rotate(45deg)';
-                icon.textContent = '–';
+                });
+            } catch (e) {
+                console.error('Chart error:', e);
             }
-        }
-    });
-});
 
-/* Навигация: подсветка активного пункта с плавной анимацией и плавный скролл */
-const navLinks = document.querySelectorAll('.nav-link');
-const sections = document.querySelectorAll('.section');
+            /* Navigation Highlighting */
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.section');
 
-/* Убираем активный класс со всех ссылок */
-function clearActiveLinks() {
-    navLinks.forEach(link => link.classList.remove('active'));
-}
+            function updateNavHighlight() {
+                try {
+                    let current = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop;
+                        const sectionHeight = section.clientHeight;
+                        if (window.scrollY >= sectionTop - sectionHeight / 3) {
+                            current = section.getAttribute('id');
+                        }
+                    });
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href').substring(1) === current) {
+                            link.classList.add('active');
+                        }
+                    });
+                } catch (e) {
+                    console.error('Nav highlight error:', e);
+                }
+            }
 
-/* Наблюдатель пересечения для активного состояния */
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            clearActiveLinks();
-            const activeLink = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
-            if (activeLink) activeLink.classList.add('active');
-        }
-    });
-}, { threshold: 0.3 });
+            window.addEventListener('scroll', updateNavHighlight);
+            window.addEventListener('resize', updateNavHighlight);
+            updateNavHighlight();
 
-sections.forEach(section => observer.observe(section));
+            /* Smooth Scroll for Navigation */
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
 
-/* Плавный скролл при клике */
-navLinks.forEach(link => {
-    link.addEventListener('click', e => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href').substring(1);
-        const targetSection = document.getElementById(targetId);
-        if (targetSection) {
-            targetSection.scrollIntoView({ behavior: 'smooth' });
-            clearActiveLinks();
-            link.classList.add('active');
-        }
-    });
-});
+            /* Accordion Functionality */
+            const accordionData = {
+                stage5: [
+                    { title: 'Типы микрофонов', content: 'Конденсаторные микрофоны обеспечивают высокое качество записи, динамические — устойчивость к громким звукам, ленточные — теплый звук.' },
+                    { title: 'Техники записи вокала', content: 'Используйте поп-фильтр, выбирайте правильное расстояние (15-20 см), контролируйте акустику помещения.' },
+                    { title: 'Цифровая обработка', content: 'Эквализация убирает нежелательные частоты, компрессия сглаживает динамику, реверберация добавляет глубину.' }
+                ],
+                stage6: [
+                    { title: 'Звук в кино', content: 'Диалоги записываются с синхронизацией, эффекты создаются в постпродакшене, музыка подчеркивает эмоции.' },
+                    { title: 'Звук в играх', content: 'Динамическое аудио адаптируется к действиям игрока, создавая иммерсивный опыт.' },
+                    { title: 'Пространственный звук', content: 'Технологии Dolby Atmos и Ambisonics обеспечивают 3D-аудио для VR и кино.' }
+                ],
+                stage7: [
+                    { title: 'Эмоции через звук', content: 'Низкие частоты создают напряжение, высокие — легкость, тишина усиливает драматизм.' },
+                    { title: 'Звуковая драматургия', content: 'Звук направляет внимание слушателя, подчеркивая ключевые моменты сюжета.' },
+                    { title: 'ИИ в сторителлинге', content: 'ИИ может генерировать адаптивные саундтреки, реагирующие на действия пользователя.' }
+                ]
+            };
 
-/* Горячие клавиши (1–7) */
-window.addEventListener('keydown', (e) => {
-    if (e.key >= '1' && e.key <= '7') {
-        const targetSection = document.getElementById('stage' + e.key);
-        if (targetSection) {
-            targetSection.scrollIntoView({ behavior: 'smooth' });
-            clearActiveLinks();
-            const activeLink = document.querySelector(`.nav-link[href="#stage${e.key}"]`);
-            if (activeLink) activeLink.classList.add('active');
-        }
-    }
-});
+            function createAccordion(containerId, items) {
+                try {
+                    const container = document.getElementById(containerId);
+                    if (!container) return;
+                    items.forEach((item, index) => {
+                        const accordionItem = document.createElement('div');
+                        accordionItem.classList.add('glass-card', 'glow-border');
+                        accordionItem.innerHTML = `
+                            <button class="accordion-button neon-text-light text-left text-lg font-medium py-4 px-6" aria-expanded="false" aria-controls="accordion-content-${containerId}-${index}">
+                                <span>${item.title}</span>
+                                <svg class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div id="accordion-content-${containerId}-${index}" class="accordion-content neon-text-light px-6 pb-4 text-base" style="max-height: 0;">
+                                <p>${item.content}</p>
+                            </div>
+                        `;
+                        container.appendChild(accordionItem);
+
+                        const button = accordionItem.querySelector('.accordion-button');
+                        const content = accordionItem.querySelector('.accordion-content');
+                        button.addEventListener('click', () => {
+                            try {
+                                const isOpen = button.getAttribute('aria-expanded') === 'true';
+                                button.setAttribute('aria-expanded', !isOpen);
+                                content.style.maxHeight = isOpen ? '0' : `${content.scrollHeight}px`;
+                                button.querySelector('svg').style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+                            } catch (e) {
+                                console.error('Accordion toggle error:', e);
+                            }
+                        });
+                    });
+                } catch (e) {
+                    console.error('Accordion creation error:', e);
+                }
+            }
+
+            createAccordion('accordion-container-5', accordionData.stage5);
+            createAccordion('accordion-container-6', accordionData.stage6);
+            createAccordion('accordion-container-7', accordionData.stage7);
+
+            /* Cleanup on page unload */
+            window.addEventListener('unload', () => {
+                try {
+                    if (oscillator && oscillator.state === 'started') {
+                        oscillator.stop();
+                    }
+                } catch (e) {
+                    console.error('Cleanup error:', e);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
